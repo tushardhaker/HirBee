@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Login</title>
+</head>
+<body>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+
+    const email = params.get("email");
+    const name = params.get("name");
+    const role = params.get("role");
+
+    if (email) {
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("fullName", name);
+        localStorage.setItem("userRole", role);
+
+        if (!role || role === "null") {
+            window.location.href = "role.html";
+        } else if (role === "CLIENT") {
+            window.location.href = "client-dashboard.html";
+        } else if (role === "ADMIN") {
+            window.location.href = "admin-dashboard.html";
+        } else {
+            window.location.href = "freelancer-dashboard.html";
+        }
+    } else {
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>

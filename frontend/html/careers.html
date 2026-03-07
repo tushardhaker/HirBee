@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #F6EEFF;       /* Lavender Mist */
+            --primary: #8C4EC9;        /* Royal Purple */
+            --secondary: #DFC6F9;      /* Soft Lilac */
+            --accent: #B979F7;         /* Orchid Glow */
+            --dark-accent: #0f172a;    /* Deep Navy */
+            --text-main: #2D1B41;      /* Dark Purple Text */
+            --white: #ffffff;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-main); background-color: var(--white); }
+        .fw-800 { font-weight: 800; }
+
+        /* Dynamic Navigation Bar */
+        .nav-top {
+            padding: 20px 0;
+            background: transparent;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .btn-back {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--secondary);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(140, 78, 201, 0.1);
+        }
+
+        .btn-back:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateX(-5px);
+        }
+
+        /* Careers Specific Styles */
+        .careers-hero { background-color: var(--bg-color); padding: 150px 0 100px 0; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; }
+        .btn-primary-custom { background-color: var(--primary); color: var(--white); border: none; padding: 12px 35px; border-radius: 50px; font-weight: 600; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .btn-primary-custom:hover { background-color: var(--dark-accent); transform: translateY(-3px); }
+        .perk-card { border: 1px solid var(--secondary); border-radius: 20px; padding: 30px; transition: 0.3s; background: var(--white); height: 100%; }
+        .perk-card:hover { border-color: var(--primary); background-color: var(--bg-color); transform: translateY(-5px); }
+        .icon-box { width: 60px; height: 60px; background-color: var(--secondary); color: var(--primary); display: flex; align-items: center; justify-content: center; border-radius: 15px; font-size: 1.5rem; margin-bottom: 20px; }
+        .job-item { border: 1px solid #eee; border-radius: 15px; padding: 20px; margin-bottom: 15px; transition: 0.3s; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; }
+        .job-item:hover { border-color: var(--primary); background-color: var(--white); }
+        .job-tag { background-color: var(--bg-color); color: var(--primary); padding: 5px 15px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; }
+        section { padding: 80px 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-top">
+        <div class="container">
+            <a href="javascript:void(0)" onclick="goToDashboard()" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <header class="careers-hero text-center">
+        <div class="container">
+            <span class="badge mb-3 px-3 py-2" style="background: var(--secondary); color: var(--primary);">WE'RE HIRING!</span>
+            <h1 class="display-3 fw-800 mb-4">Build the future of <br><span style="color: var(--primary);">remote work</span> with us.</h1>
+            <p class="lead text-muted mb-5 mx-auto" style="max-width: 700px;">Join a team dedicated to empowering the global freelance economy.</p>
+            <a href="#openings" class="btn btn-primary-custom">View Open Positions</a>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-800">Why work at <span style="color: var(--primary);">HirBee</span>?</h2>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="perk-card text-start">
+                    <div class="icon-box"><i class="bi bi-house-heart"></i></div>
+                    <h5 class="fw-bold">100% Remote Forever</h5>
+                    <p class="text-muted small">Work from anywhere in the world. We believe talent has no borders.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="perk-card text-start">
+                    <div class="icon-box"><i class="bi bi-calendar-check"></i></div>
+                    <h5 class="fw-bold">Flexible Hours</h5>
+                    <p class="text-muted small">We prioritize output over hours. Choose a schedule that fits your life.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="perk-card text-start">
+                    <div class="icon-box"><i class="bi bi-shield-plus"></i></div>
+                    <h5 class="fw-bold">Wellness Benefits</h5>
+                    <p class="text-muted small">Health coverage and mental wellness support for all team members.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container" id="openings">
+        <div class="mb-5">
+            <h2 class="fw-800">Current Openings</h2>
+            <hr style="width: 50px; border: 2px solid var(--primary); opacity: 1;">
+        </div>
+
+        <div class="job-list">
+            <a href="#" class="job-item">
+                <div>
+                    <h5 class="fw-bold mb-1">Senior Java Developer</h5>
+                    <small class="text-muted">Engineering • Remote</small>
+                </div>
+                <span class="job-tag">Full Time</span>
+            </a>
+            <a href="#" class="job-item">
+                <div>
+                    <h5 class="fw-bold mb-1">Product Designer</h5>
+                    <small class="text-muted">Design • Remote</small>
+                </div>
+                <span class="job-tag">Full Time</span>
+            </a>
+        </div>
+    </section>
+
+    <script>
+        /**
+         * Dynamic Redirect Logic
+         * Checks the userRole saved in localStorage
+         */
+        function goToDashboard() {
+            const userRole = localStorage.getItem('userRole'); // Expecting 'FREELANCER' or 'CLIENT'
+
+            if (userRole === 'FREELANCER') {
+                window.location.href = 'freelancer-dashboard.html';
+            } else if (userRole === 'CLIENT') {
+                window.location.href = 'client-dashboard.html';
+            } else {
+                // Fallback to home page if no role is found
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+    <script src="../script/session.js"></script>
+
+</body>
+</html>

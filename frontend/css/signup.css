@@ -1,0 +1,228 @@
+:root {
+    --bg-lavender: #F6EEFF;
+    --primary-purple: #8C4EC9;
+    --secondary-lilac: #DFC6F9;
+    --accent-orchid: #B979F7;
+    --dark-purple: #2D1B41;
+    --glass: rgba(255, 255, 255, 0.9);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg-lavender);
+    color: var(--dark-purple);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+/* Success Overlay Styling */
+.success-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(45, 27, 65, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+}
+
+.success-icon-box i {
+    font-size: 5rem;
+    color: #4CAF50;
+    filter: drop-shadow(0 0 20px rgba(76, 175, 80, 0.5));
+}
+
+.signup-container { 
+    width: 100%; 
+    max-width: 450px; 
+    padding: 20px; 
+}
+
+.glass-card {
+    background: var(--glass); 
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--secondary-lilac);
+    border-radius: 30px;
+    padding: 35px;
+    box-shadow: 0 20px 40px rgba(120, 105, 135, 0.1);
+}
+
+.brand-logo { font-size: 2.2rem; color: var(--primary-purple); }
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-purple), var(--accent-orchid));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.custom-label { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
+
+.input-group-custom { position: relative; display: flex; align-items: center; }
+
+.input-group-custom i {
+    position: absolute;
+    left: 15px;
+    color: var(--primary-purple);
+    font-size: 1.1rem;
+}
+
+.custom-input {
+    width: 100%;
+    background: white;
+    border: 1.5px solid var(--secondary-lilac);
+    border-radius: 12px;
+    padding: 12px 15px 12px 45px;
+    font-size: 0.9rem;
+}
+
+.custom-input:focus {
+    outline: none;
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(140, 78, 201, 0.1);
+}
+
+.verify-badge-btn {
+    position: absolute;
+    right: 8px;
+    background: var(--primary-purple);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.role-grid { display: flex; gap: 15px; }
+.role-grid input { display: none; }
+
+.role-box {
+    flex: 1; 
+    border: 1.5px solid var(--secondary-lilac); 
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center; 
+    background: white; 
+    font-weight: 600;
+    cursor: pointer;
+}
+
+input:checked + .role-box {
+    border-color: var(--primary-purple);
+    background: var(--bg-lavender);
+    color: var(--primary-purple);
+}
+
+.register-submit-btn {
+    width: 100%; 
+    padding: 14px; 
+    border-radius: 12px; 
+    border: none;
+    background: linear-gradient(90deg, var(--primary-purple), var(--accent-orchid));
+    color: white; 
+    font-weight: 700; 
+    margin-top: 10px;
+    box-shadow: 0 8px 15px rgba(140, 78, 201, 0.3);
+}
+
+.auth-divider {
+    text-align: center; margin: 25px 0 15px 0; 
+    border-bottom: 1px solid var(--secondary-lilac);
+    line-height: 0.1em; color: var(--primary-purple); 
+    font-size: 0.7rem; font-weight: 800;
+}
+.auth-divider span { background: white; padding: 0 10px; }
+
+.social-grid { display: flex; gap: 12px; }
+.social-action {
+    flex: 1; background: white; border: 1.5px solid var(--secondary-lilac);
+    border-radius: 12px; padding: 10px; font-weight: 600; font-size: 0.85rem;
+}
+
+.footer-links-container { text-align: center; margin-top: 25px; font-size: 0.85rem; }
+.brand-link { color: var(--primary-purple); font-weight: 700; }
+.home-link { display: inline-block; margin-top: 10px; text-decoration: none; color: var(--dark-purple); opacity: 0.7; }
+
+.status-success { color: #28a745; }
+.status-error { color: #dc3545; }
+  /* Intro.js custom styling matching your theme */
+        .introjs-tooltip {
+            border-radius: 16px;
+            padding: 20px 24px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 10px 35px rgba(140, 78, 201, 0.35);
+            max-width: 380px;
+        }
+        .introjs-nextbutton,
+        .introjs-donebutton {
+            background: var(--text-gradient) !important;
+            border: none !important;
+            border-radius: 50px !important;
+            color: white !important;
+            padding: 10px 24px !important;
+            font-weight: 600;
+        }
+        .introjs-prevbutton {
+            border-radius: 50px !important;
+            padding: 10px 20px !important;
+        }
+        .introjs-skipbutton {
+            color: #777 !important;
+            font-weight: 500;
+        }
+        .introjs-bullets ul li a.active {
+            background: var(--primary-purple) !important;
+        }
+        .introjs-helperLayer {
+            box-shadow: inset 0 0 1px var(--primary-purple), 0 0 0 9999px rgba(0,0,0,0.55) !important;
+        }
+
+        /* Mobile 3-line friendly tooltip */
+        @media (max-width: 576px) {
+            .introjs-mobile-3line .introjs-tooltiptext {
+                white-space: pre-line !important;
+                line-height: 1.6 !important;
+                font-size: 15px !important;
+                padding: 0 8px !important;
+            }
+            .introjs-mobile-3line {
+                max-width: 340px !important;
+            }
+        }
+        .introjs-tooltip { border-radius: 15px; font-family: 'Plus Jakarta Sans', sans-serif; padding: 20px; }
+    .introjs-nextbutton { background: #8e44ad !important; text-shadow: none !important; border: none !important; border-radius: 20px !important; color: white !important; }
+    .introjs-prevbutton { border-radius: 20px !important; }
+    .introjs-skipbutton { color: #999 !important; font-weight: bold; }
+    .introjs-bullets ul li a.active { background: #8e44ad !important; }
+
+    /* BLUE PROGRESS BAR HATANE KE LIYE */
+    .introjs-progress {
+        display: none !important;
+    }
+
+    /* BLUE HIGHLIGHT BOX HATANE KE LIYE */
+    .introjs-helperLayer {
+        background: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    .introjs-showElement {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Mobile Specific Adjustments */
+    @media (max-width: 768px) {
+        .introjs-tooltip {
+            min-width: 280px !important;
+            max-width: 90vw !important;
+            padding: 15px !important;
+        }
+        .introjs-tooltiptext { font-size: 14px !important; }
+        .introjs-arrow { display: block !important; } 
+    }

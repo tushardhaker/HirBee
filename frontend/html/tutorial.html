@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Tutorial Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-purple: #8C4EC9;
+            --white: #ffffff;
+        }
+
+        /* --- TUTORIAL OVERLAY LAYER --- */
+        #tutorialOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: none;
+            pointer-events: none; /* Allows clicking through the dark area if needed */
+        }
+
+        /* --- HIGHLIGHT BOX (The "Hole" in the overlay) --- */
+        #tutorialHighlight {
+            position: absolute;
+            border: 4px solid var(--primary-purple);
+            border-radius: 15px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 15px var(--primary-purple);
+            z-index: 2001;
+            transition: all 0.4s ease-in-out;
+            display: none;
+        }
+
+        /* --- TOOLTIP CARD --- */
+        #tutorialTooltip {
+            position: absolute;
+            width: 300px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 2002;
+            transition: all 0.4s ease-in-out;
+            display: none;
+        }
+
+        .step-count {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .btn-next {
+            background: var(--primary-purple);
+            color: white;
+            border-radius: 50px;
+            border: none;
+            padding: 5px 20px;
+            font-weight: 600;
+        }
+
+        /* Demo Dashboard Buttons (Just for reference) */
+        .demo-btn { padding: 10px 20px; border-radius: 10px; margin: 20px; cursor: pointer; display: inline-block; background: white; border: 1px solid #ddd; }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div id="tutorialOverlay"></div>
+    <div id="tutorialHighlight"></div>
+    <div id="tutorialTooltip">
+        <div class="step-count" id="stepIndicator">Step 1 of 4</div>
+        <h6 class="fw-bold" id="tutorialTitle">Update Profile</h6>
+        <p class="small text-muted" id="tutorialDesc">Yahan se aap apni profile photo aur details update kar sakte hain.</p>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button class="btn btn-sm text-muted" onclick="stopTutorial()">Skip</button>
+            <button class="btn-next" id="nextBtn" onclick="nextStep()">Next</button>
+        </div>
+    </div>
+
+    <div class="container py-5 text-center">
+        <h2 class="fw-bold mb-4">Freelancer Dashboard Tutorial Reference</h2>
+        <p>Apne dashboard mein in IDs ko use karein: <code>#profileSec</code>, <code>#bankSec</code>, <code>#jobSec</code>, <code>#earningSec</code></p>
+        
+        <hr>
+
+        <div class="d-flex flex-wrap justify-content-center">
+            <div id="profileSec" class="demo-btn">📸 Profile Section</div>
+            <div id="bankSec" class="demo-btn">💳 Add Bank Button</div>
+            <div id="jobSec" class="demo-btn">🔍 Apply for Jobs</div>
+            <div id="earningSec" class="demo-btn">💰 Wallet / Earnings</div>
+        </div>
+
+        <div class="mt-5">
+            <button class="btn btn-primary rounded-pill px-5" onclick="startTutorial()">Start Interactive Tour</button>
+        </div>
+    </div>
+
+    <script>
+        const tutorialSteps = [
+            {
+                element: "profileSec",
+                title: "Update Profile",
+                desc: "Aapka avatar aur name yahan dikhta hai. Is par click karke profile update karein."
+            },
+            {
+                element: "bankSec",
+                title: "Add Bank Account",
+                desc: "Payments lene ke liye sabse pehle apna bank account link karein."
+            },
+            {
+                element: "jobSec",
+                title: "Find & Apply Jobs",
+                desc: "Yahan se aap apne pasand ke projects search aur apply kar sakte hain."
+            },
+            {
+                element: "earningSec",
+                title: "Manage Earnings",
+                desc: "Aapki total kamayi aur wallet balance yahan manage hota hai."
+            }
+        ];
+
+        let currentStep = 0;
+
+        function startTutorial() {
+            currentStep = 0;
+            document.getElementById('tutorialOverlay').style.display = 'block';
+            document.getElementById('tutorialHighlight').style.display = 'block';
+            document.getElementById('tutorialTooltip').style.display = 'block';
+            showStep();
+        }
+
+        function showStep() {
+            const step = tutorialSteps[currentStep];
+            const target = document.getElementById(step.element);
+            const highlight = document.getElementById('tutorialHighlight');
+            const tooltip = document.getElementById('tutorialTooltip');
+
+            // Get target element position
+            const rect = target.getBoundingClientRect();
+            const scrollY = window.scrollY;
+
+            // Move Highlight Box
+            highlight.style.width = (rect.width + 10) + 'px';
+            highlight.style.height = (rect.height + 10) + 'px';
+            highlight.style.top = (rect.top + scrollY - 5) + 'px';
+            highlight.style.left = (rect.left - 5) + 'px';
+
+            // Move Tooltip
+            tooltip.style.top = (rect.bottom + scrollY + 20) + 'px';
+            tooltip.style.left = rect.left + 'px';
+
+            // Update Content
+            document.getElementById('stepIndicator').innerText = `Step ${currentStep + 1} of ${tutorialSteps.length}`;
+            document.getElementById('tutorialTitle').innerText = step.title;
+            document.getElementById('tutorialDesc').innerText = step.desc;
+
+            // Change button text on last step
+            if (currentStep === tutorialSteps.length - 1) {
+                document.getElementById('nextBtn').innerText = "Finish";
+            } else {
+                document.getElementById('nextBtn').innerText = "Next";
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < tutorialSteps.length - 1) {
+                currentStep++;
+                showStep();
+            } else {
+                stopTutorial();
+            }
+        }
+
+        function stopTutorial() {
+            document.getElementById('tutorialOverlay').style.display = 'none';
+            document.getElementById('tutorialHighlight').style.display = 'none';
+            document.getElementById('tutorialTooltip').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

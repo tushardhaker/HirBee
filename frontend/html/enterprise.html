@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Solutions | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #F6EEFF;       /* Lavender Mist */
+            --primary: #8C4EC9;        /* Royal Purple */
+            --secondary: #DFC6F9;      /* Soft Lilac */
+            --accent: #B979F7;         /* Orchid Glow */
+            --dark-accent: #0f172a;    /* Deep Navy */
+            --text-main: #2D1B41;      /* Dark Purple Text */
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--white);
+            color: var(--text-main);
+        }
+
+        .fw-800 { font-weight: 800; }
+
+        /* Navigation */
+        .nav-top {
+            padding: 15px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--secondary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .btn-back {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Enterprise Hero */
+        .enterprise-hero {
+            background-color: var(--bg-color);
+            padding: 100px 0;
+            border-bottom: 1px solid var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Feature Cards */
+        .e-card {
+            background: var(--white);
+            border: 1px solid var(--secondary);
+            border-radius: 28px;
+            padding: 40px;
+            height: 100%;
+            transition: 0.4s;
+        }
+
+        .e-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(140, 78, 201, 0.08);
+        }
+
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            background: var(--bg-color);
+            color: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+
+        /* Stats Section - Updated for White Text */
+        .stats-bar {
+            background: var(--dark-accent);
+            color: var(--white);
+            padding: 60px 0;
+            border-radius: 40px;
+            margin-top: -50px;
+            z-index: 10;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(15, 23, 42, 0.2);
+        }
+
+        .stats-bar h2 {
+            color: var(--white);
+            font-size: 2.5rem;
+        }
+
+        .stats-bar p {
+            color: var(--white) !important; /* Forces White for requested words */
+            opacity: 0.9;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .contact-banner {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 35px;
+            padding: 60px;
+            margin-top: 80px;
+        }
+
+        .btn-enterprise {
+            background: var(--white);
+            color: var(--primary);
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-enterprise:hover {
+            background: var(--dark-accent);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+
+        .badge-enterprise {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="javascript:void(0)" onclick="goToDashboard()" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Back to Platform
+            </a>
+            <a href="contact.html" class="fw-bold text-decoration-none" style="color: var(--primary);">Talk to Sales</a>
+        </div>
+    </nav>
+
+    <header class="enterprise-hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <span class="badge-enterprise">FOR LARGE TEAMS</span>
+                    <h1 class="display-3 fw-800 mb-4">Scale your business with <span style="color: var(--primary);">Elite Talent.</span></h1>
+                    <p class="lead text-muted mb-5">HirBee Enterprise provides the infrastructure, security, and world-class talent needed to drive high-impact projects at scale.</p>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-enterprise" onclick="location.href='contact.html'">Get a Demo</button>
+                        <button class="btn btn-outline-dark rounded-pill px-4" onclick="location.href='freelancers.html'">View Talent</button>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block text-center">
+                    <i class="bi bi-building-check" style="font-size: 15rem; color: var(--secondary); opacity: 0.5;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-bar">
+            <div class="row text-center">
+                <div class="col-md-4 border-end border-secondary border-opacity-25">
+                    <h2 class="fw-800">500+</h2>
+                    <p class="mb-0">Fortune 500 Clients</p>
+                </div>
+                <div class="col-md-4 border-end border-secondary border-opacity-25">
+                    <h2 class="fw-800">99.9%</h2>
+                    <p class="mb-0">Uptime Reliability</p>
+                </div>
+                <div class="col-md-4">
+                    <h2 class="fw-800">24/7</h2>
+                    <p class="mb-0">Priority Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="container py-5 mt-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-800">Built for the <span style="color: var(--primary);">Enterprise</span></h2>
+            <p class="text-muted">Security and control features designed for your IT and Legal teams.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="e-card">
+                    <div class="icon-box"><i class="bi bi-shield-lock-fill"></i></div>
+                    <h4 class="fw-bold">Bank-Level Security</h4>
+                    <p class="text-muted">SSO, SCIM provisioning, and custom data retention policies to keep your corporate data safe in our encrypted Spring Boot vault.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="e-card">
+                    <div class="icon-box"><i class="bi bi-people-fill"></i></div>
+                    <h4 class="fw-bold">Account Management</h4>
+                    <p class="text-muted">A dedicated account manager to help you source, vet, and onboard the top 1% of freelancers for your specific industry.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="e-card">
+                    <div class="icon-box"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h4 class="fw-bold">Advanced Analytics</h4>
+                    <p class="text-muted">Real-time dashboards to track project spend, freelancer performance, and ROI across your entire organization.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mb-5">
+        <div class="contact-banner text-center">
+            <h2 class="display-5 fw-800 mb-3">Ready to transform your workforce?</h2>
+            <p class="mb-5 opacity-75">Join the world's most innovative companies using HirBee to build the future.</p>
+            <button class="btn btn-enterprise" onclick="location.href='contact.html'">Contact Our Sales Team</button>
+        </div>
+    </section>
+
+    <footer class="py-5 text-center mt-5">
+        <p class="small text-muted mb-0">© 2026 HirBee Enterprise. Trusted by Corporate Leaders Worldwide.</p>
+    </footer>
+
+    <script>
+        function goToDashboard() {
+            const userRole = localStorage.getItem('userRole'); 
+            window.location.href = (userRole === 'FREELANCER') ? 'freelancer-dashboard.html' : 
+                                   (userRole === 'CLIENT') ? 'client-dashboard.html' : 'index.html';
+        }
+    </script>
+</body>
+</html>

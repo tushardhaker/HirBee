@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Wallet | Local-Lance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        .wallet-card { background: linear-gradient(135deg, #0d6efd, #003d99); color: white; border-radius: 20px; }
+        .freelancer-item { cursor: pointer; transition: 0.2s; border: 1px solid #eee; }
+        .freelancer-item:hover { background-color: #f8f9fa; border-color: #0d6efd; }
+        .bank-details-box { background: #fff3cd; border: 1px dashed #ffc107; border-radius: 10px; font-size: 0.85rem; }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="card wallet-card shadow-lg p-4 mb-4 border-0">
+                    <p class="mb-1 opacity-75">Available Balance</p>
+                    <h1 class="fw-bold mb-4">₹<span id="displayBalance">0.00</span></h1>
+                    <p class="small mb-0"><i class="bi bi-shield-check"></i> Secure Wallet Payment</p>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-3">Add Money to Wallet</h5>
+                    <form id="addMoneyForm">
+                        <div class="mb-3">
+                            <label class="small fw-bold">Enter Amount (₹)</label>
+                            <input type="number" id="amount" class="form-control form-control-lg" placeholder="500" required min="1">
+                        </div>
+                        <button type="submit" id="payBtn" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">
+                            <span id="btnText">Add Funds</span>
+                        </button>
+                    </form>
+                    <a href="client-dashboard.html" class="btn btn-link w-100 mt-3 text-decoration-none text-muted small">Go Back to Dashboard</a>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-people-fill text-primary"></i> Pay Hired Freelancers</h5>
+                    <p class="text-muted small">Select a freelancer to view bank details and pay from wallet.</p>
+                    
+                    <div id="hiredList" class="list-group gap-2">
+                        <div class="text-center p-3"><div class="spinner-border spinner-border-sm text-primary"></div></div>
+                    </div>
+
+                    <div id="paymentArea" class="mt-4 d-none border-top pt-4">
+                        <div class="bank-details-box p-3 mb-3">
+                            <h6 class="fw-bold mb-2"><i class="bi bi-bank"></i> Receiver's Bank/UPI Details</h6>
+                            <div id="bankInfo">Loading details...</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="small fw-bold">Enter Amount to Pay (₹)</label>
+                            <input type="number" id="transferAmount" class="form-control" placeholder="0.00">
+                        </div>
+                        <button onclick="payFromWallet()" class="btn btn-success w-100 rounded-pill fw-bold">Confirm & Pay Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const email = localStorage.getItem('userEmail');
+        const fullName = localStorage.getItem('fullName') || "User";
+        let selectedFreelancer = null;
+
+        // 1. Fetch Balance
+        async function fetchBalance() {
+            try {
+                const res = await fetch(`https://hirbee-1.onrender.com/api/wallet/balance?email=${email}`);
+                if(res.ok){
+                    const data = await res.json();
+                    document.getElementById('displayBalance').innerText = data.balance.toFixed(2);
+                }
+            } catch (err) { console.error("Balance fetch error", err); }
+        }
+
+        // 2. Fetch Hired Freelancers
+        async function loadHiredFreelancers() {
+            const listDiv = document.getElementById('hiredList');
+            try {
+                // Assuming this API returns freelancers you've accepted proposals from
+                const res = await fetch(`https://hirbee-1.onrender.com/api/proposals/client-list?email=${email}`);
+                const proposals = await res.json();
+                
+                // Filter only ACCEPTED ones
+                const hired = proposals.filter(p => p.status === 'ACCEPTED');
+
+                if(hired.length === 0) {
+                    listDiv.innerHTML = '<p class="text-center text-muted p-4">No hired freelancers found.</p>';
+                    return;
+                }
+
+                listDiv.innerHTML = hired.map(p => `
+                    <div class="list-group-item freelancer-item rounded-3 p-3 d-flex justify-content-between align-items-center" onclick="selectFreelancer('${p.freelancerEmail}')">
+                        <div>
+                            <h6 class="fw-bold mb-0">${p.freelancerEmail}</h6>
+                            <small class="text-muted">Job ID: ${p.jobId}</small>
+                        </div>
+                        <i class="bi bi-chevron-right text-primary"></i>
+                    </div>
+                `).join('');
+            } catch (err) {
+                listDiv.innerHTML = '<p class="text-danger small">Error loading list.</p>';
+            }
+        }
+
+        // 3. Select Freelancer & Show Bank Details
+        async function selectFreelancer(fEmail) {
+            selectedFreelancer = fEmail;
+            document.getElementById('paymentArea').classList.remove('d-none');
+            const bankInfo = document.getElementById('bankInfo');
+            bankInfo.innerHTML = "Fetching bank details...";
+
+            try {
+                const res = await fetch(`https://hirbee-1.onrender.com/api/bank/details?email=${fEmail}`);
+                if(res.ok) {
+                    const data = await res.json();
+                    bankInfo.innerHTML = `
+                        <b>Bank:</b> ${data.bankName || 'N/A'}<br>
+                        <b>A/C No:</b> ${data.accountNumber || 'N/A'}<br>
+                        <b>IFSC:</b> ${data.ifscCode || 'N/A'}<br>
+                        <b>UPI ID:</b> ${data.upiId || 'N/A'}
+                    `;
+                } else {
+                    bankInfo.innerHTML = "Freelancer has not added bank details yet.";
+                }
+            } catch (err) {
+                bankInfo.innerHTML = "Error fetching details.";
+            }
+        }
+
+        // 4. Pay from Wallet Logic
+        async function payFromWallet() {
+            const amount = document.getElementById('transferAmount').value;
+            const currentBalance = parseFloat(document.getElementById('displayBalance').innerText);
+
+            if(!amount || amount <= 0) { alert("Enter valid amount"); return; }
+            if(amount > currentBalance) { alert("Insufficient wallet balance!"); return; }
+
+            if(!confirm(`Pay ₹${amount} to ${selectedFreelancer}?`)) return;
+
+            try {
+                const res = await fetch('https://hirbee-1.onrender.com/api/wallet/transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        senderEmail: email,
+                        receiverEmail: selectedFreelancer,
+                        amount: amount
+                    })
+                });
+
+                if(res.ok) {
+                    alert("Payment Successful!");
+                    document.getElementById('transferAmount').value = "";
+                    fetchBalance();
+                } else {
+                    const msg = await res.text();
+                    alert("Payment failed: " + msg);
+                }
+            } catch (err) { alert("Server error during payment."); }
+        }
+
+        // 5. Razorpay Add Money (Same as before)
+        document.getElementById('addMoneyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('amount').value;
+            const btnText = document.getElementById('btnText');
+            btnText.innerText = "Opening Gateway...";
+
+            const options = {
+                "key": "rzp_test_Rz1yk3tgGSCQya",
+                "amount": amount * 100,
+                "currency": "INR",
+                "name": "Local-Lance Wallet",
+                "description": "Wallet Recharge",
+                "handler": async function (response) {
+                    await updateWalletOnBackend(amount, response.razorpay_payment_id);
+                },
+                "prefill": { "name": fullName, "email": email },
+                "theme": { "color": "#0d6efd" }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        });
+
+        async function updateWalletOnBackend(amount, paymentId) {
+            try {
+                const res = await fetch('https://hirbee-1.onrender.com/api/wallet/add-money', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, amount: amount, paymentId: paymentId })
+                });
+                if(res.ok) {
+                    alert("Success! Wallet updated.");
+                    fetchBalance();
+                }
+            } catch (err) { console.error(err); }
+            finally { document.getElementById('btnText').innerText = "Add Funds"; }
+        }
+
+        fetchBalance();
+        loadHiredFreelancers();
+    </script>
+</body>
+</html>

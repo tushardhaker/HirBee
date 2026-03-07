@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects | Local-Lance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --primary-purple: #8C4EC9; 
+            --bg-lavender: #F6EEFF; 
+            --secondary-lilac: #DFC6F9;
+            --accent-purple: #B979F7;
+            --text-dark: #2D1B41;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f4f7fe; 
+        }
+
+        .job-row { 
+            transition: transform 0.2s; 
+            border: none; 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            position: relative;
+            overflow: hidden;
+        }
+        .job-row:hover { 
+            transform: translateY(-3px); 
+        }
+
+        /* Purple badge for mode */
+        .badge-mode { 
+            background: rgba(140, 78, 201, 0.1); 
+            color: var(--primary-purple); 
+            border: 1px solid rgba(140, 78, 201, 0.3); 
+        }
+        
+        /* Status Badges */
+        .status-active { 
+            background-color: rgba(16, 185, 129, 0.15); 
+            color: #15803d; 
+            border: 1px solid rgba(16, 185, 129, 0.3); 
+        }
+        .status-banned { 
+            background-color: #fee2e2; 
+            color: #b91c1c; 
+            border: 1px solid #fecaca; 
+        }
+        
+        .banned-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-bottom-left-radius: 15px;
+            text-transform: uppercase;
+            z-index: 10;
+            background: #dc3545;
+            color: white;
+        }
+
+        .read-more-btn {
+            color: var(--primary-purple);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            margin-left: 5px;
+        }
+        .read-more-btn:hover {
+            color: var(--accent-purple);
+        }
+
+        .job-details-container {
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        /* Purple spinner */
+        .spinner-purple {
+            color: var(--primary-purple) !important;
+        }
+
+        /* Purple Post New button */
+        .btn-purple-gradient {
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+            color: white;
+            border: none;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+        .btn-purple-gradient:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(140, 78, 201, 0.35);
+        }
+
+        /* Export Button */
+        .btn-export-outline {
+            border: 2px solid var(--primary-purple);
+            color: var(--primary-purple);
+            background: white;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+        .btn-export-outline:hover {
+            background: var(--bg-lavender);
+            transform: translateY(-2px);
+        }
+
+        /* Back link */
+        .back-link {
+            color: var(--primary-purple);
+            font-weight: 500;
+        }
+        .back-link:hover {
+            color: var(--accent-purple);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <a href="client-dashboard.html" class="back-link small text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                </a>
+                <h2 class="fw-bold mt-2">All My Projects</h2>
+            </div>
+            <div class="d-flex gap-2">
+                <button onclick="exportProjectsCSV()" class="btn btn-export-outline rounded-pill px-4 py-2">
+                    <i class="bi bi-download me-1"></i> Export CSV
+                </button>
+                <a href="create_job.html" class="btn btn-purple-gradient rounded-pill px-4 py-2">
+                    <i class="bi bi-plus-lg me-1"></i> Post New
+                </a>
+            </div>
+        </div>
+
+        <div id="allJobsList" class="row">
+            <div class="text-center py-5">
+                <div class="spinner-border spinner-purple" role="status"></div>
+                <p class="mt-2 text-muted">Loading your projects...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let myJobsData = []; // Store globally for export
+
+        // Function to toggle between full and truncated text
+        function toggleText(btn, fullText, truncatedText) {
+            const container = btn.parentElement;
+            const isTruncated = btn.getAttribute('data-state') === 'less';
+            
+            if (isTruncated) {
+                container.innerHTML = fullText + ` <span class="read-more-btn" data-state="more" onclick="handleToggle(this, '${fullText.replace(/'/g, "\\'")}', '${truncatedText.replace(/'/g, "\\")}')">Show Less</span>`;
+            } else {
+                container.innerHTML = truncatedText + `... <span class="read-more-btn" data-state="less" onclick="handleToggle(this, '${fullText.replace(/'/g, "\\'")}', '${truncatedText.replace(/'/g, "\\")}')">Read More</span>`;
+            }
+        }
+
+        // Wrapper to handle event properly from dynamically generated HTML
+        function handleToggle(element, full, truncated) {
+            const isTruncated = element.getAttribute('data-state') === 'less';
+            const parent = element.parentElement;
+            
+            if (isTruncated) {
+                parent.innerHTML = full + ` <span class="read-more-btn" data-state="full" onclick="handleToggle(this, \`${full}\`, \`${truncated}\`)">Show Less</span>`;
+            } else {
+                parent.innerHTML = truncated + `... <span class="read-more-btn" data-state="less" onclick="handleToggle(this, \`${full}\`, \`${truncated}\`)">Read More</span>`;
+            }
+        }
+
+        // Export Function
+        function exportProjectsCSV() {
+            if (myJobsData.length === 0) {
+                alert("No projects found to export.");
+                return;
+            }
+
+            const headers = ["Title", "Budget", "Mode", "Location", "Status", "Created At"];
+            const csvRows = [headers.join(",")];
+
+            myJobsData.forEach(job => {
+                const row = [
+                    `"${(job.title || 'Untitled').replace(/"/g, '""')}"`,
+                    job.budget,
+                    job.mode,
+                    `"${(job.location || '').replace(/"/g, '""')}"`,
+                    job.status || 'ACTIVE',
+                    new Date(job.createdAt).toLocaleDateString()
+                ];
+                csvRows.push(row.join(","));
+            });
+
+            const csvString = csvRows.join("\n");
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `My_Projects_${new Date().toLocaleDateString()}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const email = localStorage.getItem('userEmail');
+            const container = document.getElementById('allJobsList');
+
+            if (!email) {
+                container.innerHTML = '<p class="text-center text-danger">Please login to view your projects.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://hirbee-1.onrender.com/api/jobs/my-jobs?email=${email}`);
+                myJobsData = await response.json();
+                
+                container.innerHTML = myJobsData.length ? '' : `
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-folder2-open fs-1 text-muted"></i>
+                        <p class="mt-2 text-muted">No projects found.</p>
+                    </div>`;
+                
+                [...myJobsData].reverse().forEach(job => {
+                    const isBanned = job.status === "BANNED";
+                    const originalText = job.details || "";
+                    const charLimit = 150;
+                    
+                    let displayDetails = originalText;
+                    
+                    // Truncate long descriptions
+                    if (originalText.length > charLimit) {
+                        const truncated = originalText.substring(0, charLimit);
+                        displayDetails = `${truncated}... <span class="read-more-btn" data-state="less" onclick="handleToggle(this, \`${originalText.replace(/'/g, "\\'")}\`, \`${truncated.replace(/'/g, "\\")}\`)">Read More</span>`;
+                    }
+                    
+                    container.innerHTML += `
+                        <div class="col-12 card job-row p-4 bg-white mb-3 shadow-sm">
+                            ${isBanned ? '<div class="banned-overlay bg-danger text-white">REJECTED / BANNED</div>' : ''}
+                            
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="pe-4 flex-grow-1">
+                                    <h5 class="fw-bold mb-2 ${isBanned ? 'text-muted' : ''}">${job.title || 'Untitled Project'}</h5>
+                                    
+                                    <div class="job-details-container mb-3 ${isBanned ? 'text-muted' : ''}">
+                                        ${displayDetails}
+                                    </div>
+
+                                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                                        <p class="text-muted small mb-0"><i class="bi bi-calendar3"></i> ${new Date(job.createdAt).toLocaleDateString()}</p>
+                                        <span class="badge ${isBanned ? 'status-banned' : 'status-active'} px-2 py-1" style="font-size: 0.7rem;">
+                                            <i class="bi ${isBanned ? 'bi-exclamation-octagon' : 'bi-check-circle'}"></i> 
+                                            ${job.status || 'ACTIVE'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="badge rounded-pill bg-success px-3 py-2 fs-6">₹${job.budget}</span>
+                            </div>
+
+                            <div class="mt-3 d-flex gap-2 flex-wrap">
+                                <span class="badge badge-mode px-3 py-2 text-uppercase">${job.mode}</span>
+                                <span class="badge bg-light text-dark border px-3 py-2"><i class="bi bi-geo-alt"></i> ${job.location}</span>
+                            </div>
+                            
+                            ${isBanned ? `
+                                <div class="mt-3 p-2 rounded bg-light border">
+                                    <small class="text-danger fw-bold"><i class="bi bi-info-circle"></i> This job was hidden by moderators for violating terms.</small>
+                                </div>
+                            ` : ''}
+                        </div>`;
+                });
+            } catch (err) {
+                container.innerHTML = '<p class="text-danger text-center">Failed to load projects. Is the backend running?</p>';
+            }
+        });
+    </script>
+</body>
+</html>

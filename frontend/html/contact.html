@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Support | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #F6EEFF;       /* Lavender Mist */
+            --primary: #8C4EC9;        /* Royal Purple */
+            --secondary: #DFC6F9;      /* Soft Lilac */
+            --accent: #B979F7;         /* Orchid Glow */
+            --dark-accent: #0f172a;    /* Deep Navy */
+            --text-main: #2D1B41;      /* Dark Purple Text */
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-main);
+            background-color: var(--white);
+            overflow-x: hidden;
+        }
+
+        .fw-800 { font-weight: 800; }
+
+        /* Navigation */
+        .nav-top {
+            padding: 20px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--secondary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .btn-back {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--secondary);
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(140, 78, 201, 0.05);
+        }
+
+        .btn-back:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateX(-5px);
+        }
+
+        /* Hero */
+        .contact-hero {
+            background-color: var(--bg-color);
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--secondary);
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: var(--white);
+            border: 1px solid var(--secondary);
+            border-radius: 24px;
+            padding: 30px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+        }
+
+        .info-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(140, 78, 201, 0.1);
+        }
+
+        .icon-box {
+            width: 55px;
+            height: 55px;
+            background: var(--secondary);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+
+        /* Form Card */
+        .contact-form-card {
+            background: var(--white);
+            border-radius: 32px;
+            padding: 45px;
+            box-shadow: 0 25px 60px rgba(45, 27, 65, 0.07);
+            border: 1px solid rgba(223, 198, 249, 0.3);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #f1f1f1;
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: #fbfbfb;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(140, 78, 201, 0.1);
+            background: var(--white);
+        }
+
+        .btn-send {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-send:hover {
+            background: var(--dark-accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
+        }
+
+        .status-badge {
+            background: #e1ffed;
+            color: #198754;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot { width: 8px; height: 8px; background: #198754; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        section { padding: 90px 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-top">
+        <div class="container">
+            <a href="javascript:void(0)" onclick="goToDashboard()" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <header class="contact-hero">
+        <div class="container">
+            <div class="status-badge mb-3"><span class="dot"></span> Support Team Live</div>
+            <h1 class="display-4 fw-800">Get in <span style="color: var(--primary);">Touch</span></h1>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">Direct support for our community. We usually respond within a few hours.</p>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="info-card">
+                            <div class="icon-box"><i class="bi bi-telephone-outbound-fill"></i></div>
+                            <h5 class="fw-bold">Company Hotline</h5>
+                            <p class="text-muted small">Reach our team directly for urgent issues.</p>
+                            <a href="tel:+919876543210" class="text-decoration-none fw-bold fs-5" style="color: var(--primary);">xxxxxxxxxx</a>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="info-card">
+                            <div class="icon-box"><i class="bi bi-envelope-check-fill"></i></div>
+                            <h5 class="fw-bold">Business Email</h5>
+                            <p class="text-muted small">Send detailed inquiries or documentations.</p>
+                            <a href="mailto: hirbeeofficial@gmail.com" class="text-decoration-none fw-bold fs-5" style="color: var(--primary);"> hirbeeofficial@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="info-card">
+                            <div class="icon-box"><i class="bi bi-geo-fill"></i></div>
+                            <h5 class="fw-bold">Registered Office</h5>
+                            <p class="text-muted small">xxxxxxxxxx</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="contact-form-card">
+                    <h3 class="fw-800 mb-4">Message us</h3>
+                    <form id="contactForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Full Name</label>
+                                <input type="text" id="name" class="form-control" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Your Email</label>
+                                <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Subject</label>
+                                <select id="subject" class="form-select" required>
+                                    <option value="" selected disabled>Why are you contacting us?</option>
+                                    <option value="Payment Issue">Payment & Vault Inquiry</option>
+                                    <option value="Technical Support">Technical Assistance</option>
+                                    <option value="Account Help">Account & Profile Security</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Message</label>
+                                <textarea id="message" class="form-control" rows="5" placeholder="Write your message here..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" id="submitBtn" class="btn btn-send">
+                                    Send to Dashboard <i class="bi bi-send-fill ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="responseMessage" class="mt-3 text-center d-none"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-5 text-center border-top">
+        <p class="small text-muted mb-0">© 2026 HirBee Inc. | Trusted by 50k+ Freelancers.</p>
+    </footer>
+
+    <script>
+        /**
+         * Dynamic Dashboard Redirect
+         */
+        function goToDashboard() {
+            const userRole = localStorage.getItem('userRole'); 
+            if (userRole === 'FREELANCER') {
+                window.location.href = 'freelancer-dashboard.html';
+            } else if (userRole === 'CLIENT') {
+                window.location.href = 'client-dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        /**
+         * API Backend Connection
+         */
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const resMsg = document.getElementById('responseMessage');
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Sending...`;
+            btn.disabled = true;
+
+            try {
+                // Pointing to your AuthController's new /contact endpoint
+                const API_URL = 'https://hirbee-1.onrender.com/api/auth/contact'; 
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    resMsg.innerHTML = `<span class="text-success fw-bold">Success! Message sent to our team.</span>`;
+                    resMsg.classList.remove('d-none');
+                    this.reset();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Server error');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                resMsg.innerHTML = `<span class="text-danger fw-bold">Error: ${error.message}</span>`;
+                resMsg.classList.remove('d-none');
+            } finally {
+                btn.innerHTML = `Send Message <i class="bi bi-send-fill ms-2"></i>`;
+                btn.disabled = false;
+            }
+        });
+    </script>
+    <script src="../script/session.js"></script>
+
+</body>
+    <script src="../script/session.js"></script>
+
+</html>

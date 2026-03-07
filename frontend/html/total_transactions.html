@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History | Admin Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-lavender: #F6EEFF;
+            --primary-purple: #8C4EC9;
+            --secondary-lilac: #DFC6F9;
+            --accent-orchid: #B979F7;
+            --dark-purple: #6A359C;
+        }
+
+        body { 
+            background-color: var(--bg-lavender); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            padding-bottom: 50px;
+        }
+
+        /* Top Header & Back Button */
+        .header-section {
+            background: white;
+            padding: 20px;
+            border-bottom: 3px solid var(--secondary-lilac);
+            margin-bottom: 30px;
+        }
+
+        .btn-back {
+            background-color: var(--bg-lavender);
+            color: var(--primary-purple);
+            border: 2px solid var(--secondary-lilac);
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            padding: 8px 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-back:hover {
+            background-color: var(--primary-purple);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .card-main {
+            border: none;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(140, 78, 201, 0.05);
+        }
+
+        /* Table Styling */
+        .table-container { border-radius: 15px; overflow: hidden; border: 1px solid var(--secondary-lilac); }
+        .table thead {
+            background-color: var(--primary-purple);
+            color: white;
+        }
+        .table thead th { border: none; padding: 15px; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        
+        .amount-tag { 
+            font-weight: 800; 
+            color: var(--primary-purple); 
+            font-size: 1.05rem;
+        }
+
+        .email-badge { 
+            background: var(--bg-lavender); 
+            color: var(--dark-purple); 
+            border: 1px solid var(--secondary-lilac); 
+            font-weight: 500;
+        }
+
+        .status-pill {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            border-radius: 50px;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .refresh-btn {
+            background-color: var(--primary-purple);
+            border: none;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .refresh-btn:hover {
+            background-color: var(--dark-purple);
+            box-shadow: 0 5px 15px rgba(140, 78, 201, 0.3);
+        }
+    </style>
+</head>
+<body class="p-0">
+
+    <div class="header-section shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <a href="admin-dashboard.html" class="btn-back">
+                <i class="bi bi-arrow-left-circle-fill me-2 fs-5"></i> Back to Dashboard
+            </a>
+            <div class="text-end">
+                <h4 class="fw-bold mb-0 text-dark">Financial Audit Logs</h4>
+                <p class="text-muted small mb-0">System-wide transaction monitoring</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4">
+        <div class="card card-main p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-shield-check me-2 text-primary"></i>Verified Payments
+                </h5>
+                <button class="refresh-btn shadow-sm" onclick="fetchTransactions()">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Refresh Logs
+                </button>
+            </div>
+
+            <div class="table-responsive table-container">
+                <table class="table table-hover align-middle bg-white mb-0">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Sender (Client)</th>
+                            <th>Receiver (Freelancer)</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Completion Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentBody">
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <div class="mt-2 fw-bold text-primary">Accessing secure logs...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API Endpoint
+        const API_URL = "https://hirbee-1.onrender.com/api/admin/payments";
+
+        async function fetchTransactions() {
+            const tbody = document.getElementById('paymentBody');
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error("Connection failed");
+
+                const transactions = await response.json();
+                
+                if (transactions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">No transactions found in history.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = transactions.map(t => {
+                    const dateObj = new Date(t.timestamp);
+                    const formattedDate = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const formattedTime = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+                    return `
+                    <tr>
+                        <td class="text-muted small fw-bold">#TXN-${t.id}</td>
+                        <td><span class="badge email-badge px-3 py-2 rounded-pill">${t.senderEmail}</span></td>
+                        <td><span class="badge email-badge px-3 py-2 rounded-pill">${t.receiverEmail}</span></td>
+                        <td class="amount-tag text-nowrap">₹${t.amount.toLocaleString('en-IN')}</td>
+                        <td><span class="status-pill"><i class="bi bi-check-circle-fill me-1"></i> SUCCESS</span></td>
+                        <td>
+                            <div class="small fw-bold text-dark">${formattedDate}</div>
+                            <div class="text-muted" style="font-size: 0.7rem;">${formattedTime}</div>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+            } catch (error) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-danger fw-bold">
+                            <i class="bi bi-exclamation-octagon fs-2 d-block mb-2"></i>
+                            Server Connection Error: Could not fetch logs.
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        window.onload = fetchTransactions;
+    </script>
+</body>
+</html>

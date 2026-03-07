@@ -1,0 +1,102 @@
+/* ================================================================
+   HirBee - EARNINGS PAGE (earning.css)
+   ================================================================ */
+
+:root {
+    --bg-lavender: #F6EEFF;    /* Lavender Mist */
+    --primary-purple: #8C4EC9; /* Royal Purple */
+    --secondary-lilac: #DFC6F9; /* Soft Lilac */
+    --accent-orchid: #B979F7;  /* Orchid Glow */
+    --text-dark: #2D1B41;
+    --white: #ffffff;
+}
+
+body.bg-lavender {
+    background-color: var(--bg-lavender) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Hero Earnings Card */
+.earning-hero-card {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--accent-orchid) 100%);
+    border-radius: 30px;
+}
+
+.btn-withdraw-glow {
+    background-color: var(--white);
+    color: var(--primary-purple);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-withdraw-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    background-color: var(--bg-lavender);
+    color: var(--primary-purple);
+}
+
+/* Buttons */
+.btn-outline-purple {
+    border: 2px solid var(--primary-purple);
+    color: var(--primary-purple);
+    font-weight: 600;
+}
+
+.btn-outline-purple:hover {
+    background-color: var(--primary-purple);
+    color: white;
+}
+
+.btn-purple-action {
+    background: linear-gradient(45deg, var(--primary-purple), var(--accent-orchid));
+    color: white;
+    border: none;
+}
+
+.btn-purple-action:hover {
+    opacity: 0.9;
+    color: white;
+}
+
+/* Transactions */
+.tx-item {
+    border-radius: 18px !important;
+    transition: transform 0.2s;
+}
+
+.tx-item:hover {
+    transform: scale(1.01);
+}
+
+.icon-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.bg-success-light { background-color: #e8f5e9; color: #2e7d32; }
+.bg-danger-light { background-color: #ffebee; color: #c62828; }
+
+/* Modal & Forms */
+.bank-preview-box {
+    background-color: var(--bg-lavender);
+}
+
+.input-group-text {
+    border: 1px solid var(--secondary-lilac);
+    color: var(--primary-purple);
+}
+
+.form-control:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 0.25rem rgba(140, 78, 201, 0.1);
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}

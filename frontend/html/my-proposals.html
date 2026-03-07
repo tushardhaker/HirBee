@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Proposals | Local-Lance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #8C4EC9;
+            --bg-lavender: #F6EEFF;
+            --secondary-lilac: #DFC6F9;
+            --text-dark: #2D1B41;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Brand Styling */
+        .brand-text {
+            color: var(--primary-purple) !important;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* Sidebar Desktop */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: white;
+            border-right: 1px solid var(--secondary-lilac);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 5px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-lavender);
+            color: var(--primary-purple);
+        }
+
+        .nav-link.active {
+            background: var(--primary-purple) !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(140, 78, 201, 0.2);
+        }
+
+        /* Proposal UI */
+        .proposal-container {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--secondary-lilac);
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: var(--bg-lavender);
+            color: var(--primary-purple);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+            border: none;
+            padding: 15px 20px;
+        }
+
+        .status-badge-pending { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .status-badge-accepted { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-badge-rejected { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            background: white;
+            border-bottom: 1px solid var(--secondary-lilac);
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        /* Export Button Styling */
+        .btn-export {
+            border: 1.5px solid var(--primary-purple);
+            color: var(--primary-purple);
+            background: transparent;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-export:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 991.98px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+            .mobile-header { display: flex; align-items: center; justify-content: space-between; }
+            
+            .table-responsive thead { display: none; }
+            .table-responsive tbody tr {
+                display: block;
+                border-bottom: 1px solid var(--secondary-lilac);
+                padding: 15px;
+            }
+            .table-responsive td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: none;
+                padding: 8px 0 !important;
+                text-align: right;
+            }
+            .table-responsive td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                color: var(--primary-purple);
+                text-align: left;
+            }
+            .table-responsive td:first-child {
+                display: block;
+                text-align: left;
+                padding-bottom: 15px !important;
+            }
+            .table-responsive td:first-child::before { display: block; margin-bottom: 5px; }
+            .table-responsive td:last-child { justify-content: center; width: 100%; margin-top: 10px; }
+            
+            .btn-review { width: 100%; }
+        }
+
+        .btn-review {
+            background-color: #272323 !important;
+            color: white !important;
+            border: none !important;
+            font-weight: 600;
+        }
+
+        .btn-review:hover {
+            background-color: #222222 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .modal-header .btn-close {
+            background: transparent !important;
+            color: var(--primary-purple) !important;
+            opacity: 1 !important;
+            font-size: 1.4rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-header .btn-close:hover {
+            background: rgba(140, 78, 201, 0.1) !important;
+            transform: rotate(90deg);
+        }
+
+        .nav-link.back-dashboard {
+            margin-top: 2.5rem !important;
+            padding: 12px 20px !important;
+            border-radius: 12px;
+            background: rgba(140, 78, 201, 0.05) !important;
+            color: var(--primary-purple) !important;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+
+        .nav-link.back-dashboard:hover {
+            background: rgba(140, 78, 201, 0.15) !important;
+            transform: translateX(6px);
+        }
+
+        .nav-item.mt-5 {
+            margin-top: 3.5rem !important;
+            border-top: 1px solid var(--secondary-lilac);
+            padding-top: 1.5rem !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-header">
+        <button class="btn btn-light border" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+            <i class="bi bi-list fs-4"></i>
+        </button>
+        <h5 class="brand-text mb-0"></h5>
+        <div style="width: 45px;"></div> 
+    </div>
+
+    <nav class="sidebar p-3 shadow-sm d-none d-lg-block">
+        <div class="brand mb-4 px-3 text-center">
+            <h4 class="brand-text"></h4>
+        </div>
+        <ul class="nav flex-column gap-1">
+            <li class="nav-item"><a href="freelancer-dashboard.html" class="nav-link"><i class="bi bi-search me-2"></i> Find Jobs</a></li>
+            <li class="nav-item"><a href="my-proposals.html" class="nav-link active"><i class="bi bi-file-earmark-text me-2"></i> My Proposals</a></li>
+            <li class="nav-item mt-5"><a href="freelancer-dashboard.html" class="nav-link text-muted small"><i class="bi bi-arrow-left me-2"></i> Back to Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" style="width: 280px;">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title brand-text"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item"><a href="freelancer-dashboard.html" class="nav-link"><i class="bi bi-search me-2"></i> Find Jobs</a></li>
+                <li class="nav-item"><a href="my-proposals.html" class="nav-link active"><i class="bi bi-file-earmark-text me-2"></i> My Proposals</a></li>
+                <hr>
+            </ul>
+        </div>
+    </div>
+
+    <main class="main-content p-3 p-md-4">
+        <header class="d-md-flex justify-content-between align-items-center mb-4 text-center text-md-start">
+            <div>
+                <h3 class="fw-bold mb-1">My Submitted Proposals</h3>
+                <p class="text-muted small">Track the status of your applications</p>
+            </div>
+            <div class="d-flex gap-2 justify-content-center justify-content-md-end align-items-center">
+                <button onclick="exportProposalsCSV()" class="btn btn-export rounded-pill px-3 py-2 small">
+                    <i class="bi bi-download me-1"></i> Export CSV
+                </button>
+                <div class="security-badge px-3 py-2 rounded-pill small bg-white border">
+                    <i class="bi bi-shield-check text-success me-1"></i> Verified
+                </div>
+            </div>
+        </header>
+
+        <div class="proposal-container shadow-sm">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Job Description</th>
+                            <th>Bid Amount</th>
+                            <th>Date Submitted</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="proposalsTableBody">
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2 text-muted">Loading your proposals...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 bg-light">
+                    <h5 class="modal-title fw-bold">Proposal Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="small fw-bold text-primary text-uppercase mb-1">Job Context</label>
+                        <p id="modalJobDetails" class="mb-0 fw-semibold text-dark"></p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="small fw-bold text-primary text-uppercase mb-1">Your Pitch</label>
+                        <div class="p-3 rounded-3 bg-light border">
+                            <p id="modalCoverLetter" class="mb-0 small text-dark" style="white-space: pre-wrap;"></p>
+                        </div>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 border bg-white">
+                                <label class="small fw-bold text-muted d-block mb-1">Proposed Bid</label>
+                                <span id="modalBid" class="h5 fw-bold text-success mb-0"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 border bg-white">
+                                <label class="small fw-bold text-muted d-block mb-1">Current Status</label>
+                                <span id="modalStatus" class="fw-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let allProposals = [];
+
+        async function loadProposals() {
+            const email = localStorage.getItem('userEmail');
+            const tbody = document.getElementById('proposalsTableBody');
+            
+            try {
+                const res = await fetch(`https://hirbee-1.onrender.com/api/proposals/my-list?email=${email}`);
+                allProposals = await res.json();
+                
+                if(allProposals.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted">No proposals submitted yet.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = allProposals.map((p, index) => {
+                    let statusBadge = "status-badge-pending";
+                    if(p.status === "ACCEPTED") statusBadge = "status-badge-accepted";
+                    if(p.status === "REJECTED") statusBadge = "status-badge-rejected";
+
+                    return `
+                        <tr>
+                            <td class="ps-4" data-label="Job Description">
+                                <div class="fw-bold text-dark">${p.jobDetails.substring(0, 50)}${p.jobDetails.length > 50 ? '...' : ''}</div>
+                                <div class="badge bg-light text-muted fw-normal">ID: #${p.jobId}</div>
+                            </td>
+                            <td data-label="Bid Amount"><span class="fw-bold text-dark">₹${p.bidAmount}</span></td>
+                            <td data-label="Date" class="text-muted small">${new Date(p.createdAt).toLocaleDateString(undefined, {year: 'numeric', month: 'short', day: 'numeric'})}</td>
+                            <td data-label="Status"><span class="badge ${statusBadge} rounded-pill px-3 py-2">${p.status}</span></td>
+                            <td class="text-end pe-4">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-4 shadow-sm btn-review" onclick="showDetails(${index})">
+                                    Review
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) { 
+                console.error(e); 
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Failed to load proposals. Check console for details.</td></tr>`;
+            }
+        }
+
+        function exportProposalsCSV() {
+            if (allProposals.length === 0) {
+                alert("No proposal data available to export.");
+                return;
+            }
+
+            const headers = ["Job ID", "Job Details", "Bid Amount (INR)", "Submitted Date", "Status", "Cover Letter"];
+            const csvRows = [
+                headers.join(','),
+                ...allProposals.map(p => [
+                    p.jobId,
+                    `"${p.jobDetails.replace(/"/g, '""')}"`,
+                    p.bidAmount,
+                    new Date(p.createdAt).toLocaleDateString(),
+                    p.status,
+                    `"${p.coverLetter.replace(/"/g, '""')}"`
+                ].join(','))
+            ];
+
+            const csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `My_Proposals_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function showDetails(index) {
+            const p = allProposals[index];
+            document.getElementById('modalJobDetails').innerText = p.jobDetails;
+            document.getElementById('modalCoverLetter').innerText = p.coverLetter;
+            document.getElementById('modalBid').innerText = "₹" + p.bidAmount;
+            
+            const statusEl = document.getElementById('modalStatus');
+            statusEl.innerText = p.status;
+            
+            statusEl.className = "fw-bold " + 
+                (p.status === 'PENDING' ? 'text-warning' : 
+                (p.status === 'ACCEPTED' ? 'text-success' : 'text-danger'));
+
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        window.onload = loadProposals;
+    </script>
+</body>
+</html>

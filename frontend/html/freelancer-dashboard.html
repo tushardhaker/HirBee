@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancer Dashboard | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Intro.js -->
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+    
+    <style>
+        :root { 
+            --bg-light: #F6EEFF; 
+            --primary-purple: #8C4EC9; 
+            --secondary-lilac: #DFC6F9; 
+            --accent-orchid: #B979F7;  
+            --text-dark: #2D1B41;      
+            --white: #ffffff;
+            --success-green: #2ecc71;
+            --primary-gradient: linear-gradient(135deg, #8C4EC9 0%, #B979F7 100%);
+            --dark-purple: #6A359C;
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-light); 
+            color: var(--text-dark);
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
+
+        .navbar { 
+            background: var(--white); 
+            border-bottom: 1px solid var(--secondary-lilac); 
+            padding: 0.8rem 1rem; 
+            height: 80px;
+            z-index: 1050;
+        }
+
+        /* ────────────────────────────────────────────────
+           MOBILE HEADER FIXES – MOST IMPORTANT PART
+           ──────────────────────────────────────────────── */
+        @media (max-width: 991.98px) {
+            .navbar {
+                height: 68px !important;
+                padding: 0.5rem 1rem !important;
+            }
+
+            .navbar-brand {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .navbar-brand img {
+                height: 54px !important;          /* reduced from 90px */
+                width: auto !important;
+                object-fit: contain;
+            }
+
+            .navbar-toggler {
+                padding: 0.4rem 0.6rem !important;
+                border: none !important;
+            }
+
+            .navbar-toggler i {
+                font-size: 1.9rem !important;
+                color: var(--primary-purple) !important;
+            }
+
+            .dropdown-toggle {
+                padding: 0.35rem 0.5rem !important;
+            }
+
+            #navProfileIcon {
+                width: 38px !important;
+                height: 38px !important;
+            }
+
+            #headerUserName {
+                display: none !important;         /* hide name on mobile */
+            }
+
+            .verified-badge {
+                width: 20px !important;
+                height: 20px !important;
+                font-size: 0.65rem !important;
+                top: -4px !important;
+                right: -4px !important;
+            }
+
+            .dropdown-menu {
+                min-width: 220px !important;
+                max-width: 92vw !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand img {
+                height: 50px !important;          /* even smaller on tiny phones */
+            }
+            .navbar {
+                height: 64px !important;
+            }
+            #navProfileIcon {
+                width: 36px !important;
+                height: 36px !important;
+            }
+        }
+
+        /* Rest of your existing styles remain unchanged */
+        .nav-link-custom {
+            color: var(--text-dark);
+            font-weight: 600;
+            margin: 0 15px;
+            transition: 0.3s;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: var(--primary-purple);
+        }
+
+        .main-wrapper { display: flex; flex: 1; width: 100%; }
+        
+        .sidebar { 
+            min-width: 280px; 
+            background: var(--white); 
+            border-right: 1px solid var(--secondary-lilac); 
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .text-primary { color: var(--primary-purple) !important; }
+        .btn-primary { background: var(--primary-gradient); border: none; color: white; transition: 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; color: white; }
+
+        .sidebar-avatar-img { width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 3px solid var(--secondary-lilac); }
+        .nav-profile-img { width: 40px; height: 40px; object-fit: cover; border-radius: 50%; }
+        .preview-img { width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 3px solid var(--primary-purple); margin-bottom: 10px; background: #eee; }
+
+        .nav-link { color: var(--text-dark); font-weight: 500; transition: 0.3s; text-decoration: none; padding: 0.7rem 1.2rem; border-radius: 12px; display: flex; align-items: center; cursor: pointer; }
+        .nav-link i { font-size: 1.2rem; margin-right: 12px; }
+        .nav-link:hover { color: var(--primary-purple); background: var(--bg-light); }
+        .sidebar .nav-link.active { background: var(--primary-purple); color: white !important; }
+        
+        .sidebar-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--accent-orchid); margin: 20px 0 10px 15px; letter-spacing: 1px; }
+
+        .app-success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; flex-direction: column; animation: fadeIn 0.5s; }
+        .success-tick-circle { width: 80px; height: 80px; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; margin-bottom: 15px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .app-success-overlay h4 { animation: bounce 1s; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-30px); } 60% { transform: translateY(-15px); } }
+        
+        .filter-section { background: var(--white); border-radius: 20px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--secondary-lilac); }
+        .bank-btn { background: var(--primary-gradient); color: white; border: none; font-weight: 600; }
+        
+        .plan-card { border: 2px solid var(--secondary-lilac); transition: 0.3s; cursor: pointer; }
+        .plan-card:hover { border-color: var(--primary-purple); transform: scale(1.02); }
+        .plan-card.active { border-color: var(--primary-purple); background: #fdfaff; }
+
+        .verified-badge { 
+            position: absolute; 
+            top: -5px; 
+            right: -5px; 
+            background: #00d4aa; 
+            color: white; 
+            border-radius: 50%; 
+            width: 24px; 
+            height: 24px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 0.75rem; 
+            border: 2px solid white; 
+        }
+
+        footer {
+            background: var(--white);
+            border-top: 1px solid var(--secondary-lilac);
+            padding: 50px 0 20px;
+            margin-top: auto;
+        }
+        .footer-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); }
+        .footer-link { color: #6c757d; text-decoration: none; transition: 0.3s; font-size: 0.9rem; margin-bottom: 8px; display: block; }
+        .footer-link:hover { color: var(--primary-purple); }
+
+        @media (max-width: 991.98px) {
+            .sidebar { display: none; }
+            .desktop-nav-links { display: none !important; }
+            .content-area { padding: 15px !important; }
+        }
+
+       .introjs-tooltip {
+            border-radius: 16px;
+            padding: 16px 20px;
+            max-width: 88vw !important;
+            min-width: 240px;
+            font-size: 15px;
+            line-height: 1.55;
+            box-shadow: 0 10px 35px rgba(140, 78, 201, 0.35);
+        }
+        .introjs-tooltiptext {
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+        .introjs-nextbutton,
+       .introjs-donebutton {
+            background: var(--primary-gradient) !important;
+            border: none !important;
+            border-radius: 50px !important;
+            color: white !important;
+            padding: 10px 20px !important;
+            font-weight: 600;
+        }
+
+        .introjs-prevbutton {
+            border-radius: 50px !important;
+        }
+
+        .introjs-skipbutton {
+            color: #777 !important;
+            font-weight: 500;
+        }
+
+        .introjs-bullets ul li a.active {
+            background: var(--primary-purple) !important;
+        }
+
+        .introjs-helperLayer {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .introjs-showElement {
+            outline: none !important;
+        }
+
+        /* Mobile 3-line friendly tooltip */
+       @media (max-width: 576px) {
+            .introjs-tooltip {
+                font-size: 14.5px !important;
+                padding: 14px 18px !important;
+                max-width: 90vw !important;
+            }
+            .introjs-tooltiptext {
+                font-size: 14.5px !important;
+            }
+        }
+        .introjs-tooltip { border-radius: 15px; font-family: 'Plus Jakarta Sans', sans-serif; padding: 20px; }
+        .introjs-nextbutton { background: #8e44ad !important; text-shadow: none !important; border: none !important; border-radius: 20px !important; color: white !important; }
+        .introjs-prevbutton { border-radius: 20px !important; }
+        .introjs-skipbutton { color: #999 !important; font-weight: bold; }
+        .introjs-bullets ul li a.active { background: #8e44ad !important; }
+
+        /* BLUE PROGRESS BAR HATANE KE LIYE */
+        .introjs-progress {
+            display: none !important;
+        }
+
+        /* BLUE HIGHLIGHT BOX HATANE KE LIYE */
+        .introjs-helperLayer {
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+        .introjs-showElement {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Mobile Specific Adjustments */
+        @media (max-width: 768px) {
+            .introjs-tooltip {
+                min-width: 280px !important;
+                max-width: 90vw !important;
+                padding: 15px !important;
+            }
+            .introjs-tooltiptext { font-size: 14px !important; }
+            .introjs-arrow { display: block !important; } 
+        }
+
+        body.introjs-showElement .offcanvas {
+            z-index: 99999 !important;
+        }
+        /* === UNIQUE CUSTOM ERROR POPUP === */
+        #errorPopupOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(108, 117, 125, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 10002;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-popup {
+            background: linear-gradient(135deg, #ffffff, #f8f5ff);
+            border-radius: 30px;
+            padding: 40px 30px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(140, 78, 201, 0.4);
+            border: 2px solid var(--secondary-lilac);
+            text-align: center;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #errorPopupOverlay.show .error-popup {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .error-icon {
+            font-size: 4.5rem;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-purple);
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: #6c757d;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .error-btn-upgrade {
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-orchid));
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-weight: 600;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .error-btn-upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(140, 78, 201, 0.5);
+        }
+
+        .error-btn-close {
+            background: transparent;
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        /* Force purple buttons in job feed */
+        #feedContainer .btn {
+            background: var(--primary-gradient) !important;
+            border-color: var(--primary-purple) !important;
+            color: white !important;
+        }
+
+        #feedContainer .btn:hover {
+            background: var(--dark-purple) !important;
+            border-color: var(--dark-purple) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Remove any leftover blue */
+        #feedContainer [class*="info"],
+        #feedContainer [class*="primary"] {
+            background: var(--primary-purple) !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Success Overlays -->
+    <div id="applicationSuccessOverlay" class="app-success-overlay">
+        <div class="success-tick-circle"><i class="bi bi-check-lg"></i></div>
+        <h4 class="fw-bold">Proposal Submitted!</h4>
+    </div>
+    <div id="profileSuccessOverlay" class="app-success-overlay">
+        <div class="success-tick-circle" style="background: var(--primary-purple) !important;"><i class="bi bi-person-check-fill"></i></div>
+        <h4 class="fw-bold">Profile Updated!</h4>
+    </div>
+    <div id="paymentSuccessOverlay" class="app-success-overlay">
+        <div class="success-tick-circle"><i class="bi bi-shield-check"></i></div>
+        <h4 class="fw-bold">Subscription Active!</h4>
+        <p class="text-muted">Your plan has been upgraded successfully. Enjoy premium features!</p>
+    </div>
+
+    <!-- Custom Error Popup Overlay -->
+    <div id="errorPopupOverlay">
+        <div class="error-popup">
+            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+            <h3 class="error-title">Limit Reached!</h3>
+            <p class="error-message" id="errorMessageText">You have reached the weekly limit of 3 bids as a free user. Upgrade to Premium for unlimited proposals.</p>
+            <div class="mt-4">
+                <a href="freelancer-dashboard.html" class="btn error-btn-upgrade me-2">
+                    Upgrade Now <i class="bi bi-rocket-takeoff-fill ms-2"></i>
+                </a>
+                <button onclick="hideErrorPopup()" class="btn error-btn-close">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+        <div class="container-fluid px-md-4">
+            <button class="btn border-0 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+              <a class="navbar-brand fw-bolder fs-3 text-brand-primary d-flex align-items-center" href="index.html">
+    <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" class="me-2" style="height: 90px; width: auto;">
+    
+</a>
+
+            <div class="collapse navbar-collapse justify-content-center desktop-nav-links">
+                <div class="navbar-nav">
+                    <a class="nav-link-custom" href="index.html">Home</a>
+                    <a class="nav-link-custom active" href="total_jobs.html">Find Jobs</a>
+                    <a class="nav-link-custom" href="about.html">About Us</a>
+                </div>
+            </div>
+
+            <!-- Profile Dropdown -->
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" role="button" data-bs-toggle="dropdown">
+                    <div id="navProfileIcon" class="position-relative bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px; overflow: hidden; background: var(--primary-gradient) !important;">
+                        <i class="bi bi-person fs-5"></i>
+                        <div id="headerVerifiedBadge" class="verified-badge d-none">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </div>
+                    </div>
+                    <span id="headerUserName" class="fw-semibold d-none d-md-inline">Account</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2 rounded-4">
+                    <li><a class="dropdown-item rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#updateProfileModal"><i class="bi bi-gear me-2"></i>Update profile</a></li>
+                    <li><a class="dropdown-item rounded-3" href="my-proposals.html"><i class="bi bi-file-earmark-text me-2"></i>My Proposals</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger rounded-3" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" style="width: 280px;">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold text-primary">Main Menu</h5>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="text-center mb-4 mt-2">
+                <div class="position-relative mb-3 mx-auto" style="width: 75px; height: 75px;">
+                    <div id="mobileSidebarAvatar" class="rounded-circle shadow" style="width: 75px; height: 75px; background: var(--primary-gradient); overflow: hidden;">
+                        <i class="bi bi-person-fill fs-1 text-white"></i>
+                    </div>
+                    <div id="mobileSidebarVerifiedBadge" class="verified-badge d-none">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                </div>
+                <h6 class="fw-bold mb-0" id="mobileFreelancerName">Loading...</h6> 
+                <p class="text-muted small mb-3" id="mobileDisplayLocation"><i class="bi bi-geo-alt"></i> No Location</p>
+                
+                <div id="mobileSubscriptionNavItem">
+                    <button class="btn btn-sm w-100 rounded-pill py-2 mb-2 shadow-sm fw-bold" style="background: #FFF9E6; color: #D4A017; border: 1px solid #FFE5A3;" data-bs-toggle="modal" data-bs-target="#subscriptionModal">
+                        <i class="bi bi-patch-check-fill me-2"></i>Upgrade Plan
+                    </button>
+                </div>
+                
+                <button id="mobileBankBtn" class="btn btn-sm bank-btn w-100 rounded-pill py-2" onclick="window.location.href='bank.html'">
+                    <i class="bi bi-credit-card me-2"></i> Add Bank
+                </button>
+            </div>
+            <div class="sidebar-label">Navigation</div>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-house"></i> Home</a></li>
+                <li class="nav-item"><a href="total_jobs.html" class="nav-link"><i class="bi bi-briefcase"></i> All Jobs</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link"><i class="bi bi-info-circle"></i> About Us</a></li>
+            </ul>
+            <hr>
+            <div class="sidebar-label">Freelancer Menu</div>
+            <ul class="nav flex-column gap-1">
+                <li id="findJobsLink" class="nav-item"><a href="freelancer-dashboard.html" class="nav-link active"><i class="bi bi-search"></i> Find Jobs</a></li>
+                <li class="nav-item"><a href="my-proposals.html" class="nav-link"><i class="bi bi-file-earmark-text"></i> My Proposals</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showNotifications()"><i class="bi bi-bell"></i> Alerts <span id="mobileNotifBadge" class="badge rounded-pill bg-danger d-none">0</span></a></li>
+                <li id="mobileEarningsLink" class="nav-item"><a href="earning.html" class="nav-link"><i class="bi bi-cash-stack"></i> Earnings</a></li>
+                <li class="nav-item"><a href="message.html" class="nav-link"><i class="bi bi-chat"></i> Message</a></li>
+            </ul>
+            <div class="mt-4 px-2">
+                <button class="btn btn-light btn-sm w-100 rounded-pill text-muted border" onclick="startDashboardTour(true)">
+                    <i class="bi bi-question-circle me-1"></i> Help Tour
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar p-3 d-none d-lg-block">
+            <div class="text-center mb-4 mt-2">
+                <div class="position-relative mb-3 mx-auto" style="width: 75px; height: 75px;">
+                    <div id="sidebarAvatar" class="rounded-circle shadow" style="width: 75px; height: 75px; background: var(--primary-gradient); overflow: hidden;">
+                        <i class="bi bi-person-fill fs-1 text-white"></i>
+                    </div>
+                    <div id="sidebarVerifiedBadge" class="verified-badge d-none">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                </div>
+                <h6 class="fw-bold mb-0" id="freelancerName">Loading...</h6> 
+                <p class="text-muted small mb-3" id="displayLocation"><i class="bi bi-geo-alt"></i> No Location</p>
+                
+                <div id="subscriptionNavItem">
+                    <button class="btn btn-sm w-100 rounded-pill py-2 mb-2 shadow-sm fw-bold" style="background: #FFF9E6; color: #D4A017; border: 1px solid #FFE5A3;" data-bs-toggle="modal" data-bs-target="#subscriptionModal">
+                        <i class="bi bi-patch-check-fill me-2"></i>Upgrade Plan
+                    </button>
+                </div>
+                
+                <button id="bankBtn" class="btn btn-sm bank-btn w-100 rounded-pill py-2" onclick="window.location.href='bank.html'">
+                    <i class="bi bi-credit-card me-2"></i> Add Bank
+                </button>
+            </div>
+            
+            <div class="sidebar-label">Navigation</div>
+            <ul class="nav flex-column gap-1 mb-3">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-house"></i> Home</a></li>
+                <li class="nav-item"><a href="total_jobs.html" class="nav-link"><i class="bi bi-briefcase"></i> All Jobs</a></li>
+            </ul>
+            
+            <div class="sidebar-label">Freelancer Menu</div>
+            <ul class="nav flex-column gap-1">
+                <li id="findJobsLink" class="nav-item"><a href="freelancer-dashboard.html" class="nav-link active"><i class="bi bi-search"></i> Find Jobs</a></li>
+                <li class="nav-item"><a href="my-proposals.html" class="nav-link"><i class="bi bi-file-earmark-text"></i> My Proposals</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showNotifications()"><i class="bi bi-bell"></i> Alerts <span id="notifBadge" class="badge rounded-pill bg-danger d-none">0</span></a></li>
+                <li id="earningsLink" class="nav-item"><a href="earning.html" class="nav-link"><i class="bi bi-cash-stack"></i> Earnings</a></li>
+                <li class="nav-item"><a href="message.html" class="nav-link"><i class="bi bi-chat"></i> Message</a></li>
+            </ul>
+            
+            <div class="mt-4 px-2">
+                <button class="btn btn-light btn-sm w-100 rounded-pill text-muted border" onclick="startDashboardTour(true)">
+                    <i class="bi bi-question-circle me-1"></i> Help Tour
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow-1 p-4 content-area">
+            <header class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">Project Feed</h3>
+                    <p class="text-muted small">Explore jobs curated for you</p>
+                </div>
+            </header>
+
+            <section id="filterFormSection" class="filter-section shadow-sm mb-4">
+                <form id="filterForm" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="small fw-bold text-muted mb-2">Keyword</label>
+                        <input type="text" id="filterKeyword" class="form-control rounded-pill" placeholder="e.g. Logo Design, React, Front End">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="small fw-bold text-muted mb-2">Location</label>
+                        <input type="text" id="filterLocation" class="form-control rounded-pill" placeholder="e.g. Jaipur, Remote">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold text-muted mb-2">Max Budget (₹)</label>
+                        <input type="number" id="filterAmount" class="form-control rounded-pill" placeholder="e.g. 5000" min="0">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold text-muted mb-2">Mode</label>
+                        <select id="filterMode" class="form-select rounded-pill">
+                            <option value="all">Any</option>
+                            <option value="online">Online / Remote</option>
+                            <option value="offline">Offline / On-site</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end gap-2">
+                        <button type="button" class="btn btn-primary rounded-pill py-2 fw-bold flex-grow-1" onclick="applyFilters()">
+                            <i class="bi bi-search me-1"></i> Search
+                        </button>
+                        
+                    </div>
+                </form>
+            </section>
+
+            <div class="row g-3" id="feedContainer">
+                <div class="text-center p-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-3">Loading jobs for you...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+   <!-- Subscription Modal -->
+<div class="modal fade" id="subscriptionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h4 class="fw-bold mb-0">Choose Your Plan</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <!-- Starter / Free Plan -->
+                    <div class="col-md-6">
+                        <div class="card h-100 rounded-4 p-4 plan-card text-center">
+                            <div class="mb-3"><i class="bi bi-stars text-primary fs-2"></i></div>
+                            <h5 class="fw-bold">Starter</h5>
+                            <h3 class="fw-bold text-primary">Free <small class="text-muted fs-6">/ forever</small></h3>
+                            <ul class="list-unstyled my-4 text-start small">
+                                <li><i class="bi bi-check2 text-success me-2"></i> 7 bids per week</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Basic profile visibility</li>
+                                <li><i class="bi bi-x text-danger me-2"></i> No verified badge</li>
+                                <li><i class="bi bi-x text-danger me-2"></i> Standard support</li>
+                            </ul>
+                            <button class="btn btn-outline-primary rounded-pill w-100 mt-auto" 
+                                    onclick="paySubscription('STARTER', 0)">
+                                Activate Free Plan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Premium Plan (only real paid plan now) -->
+                    <div class="col-md-6">
+                        <div class="card h-100 rounded-4 p-4 plan-card border-primary shadow text-center position-relative">
+                            <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger px-3 py-2" style="font-size:0.9rem;">
+                                Most Popular
+                            </span>
+                            <div class="mb-3 mt-4"><i class="bi bi-rocket-takeoff-fill text-primary fs-2"></i></div>
+                            <h5 class="fw-bold">Premium</h5>
+                            <h3 class="fw-bold text-primary">₹49 <small class="text-muted fs-6">/ month</small></h3>
+                            <ul class="list-unstyled my-4 text-start small">
+                                <li><i class="bi bi-check2 text-success me-2"></i> <strong>Unlimited</strong> bids</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Verified badge + priority listing</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Top placement in search</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Priority support</li>
+                            </ul>
+                            <button class="btn btn-primary rounded-pill w-100 mt-auto shadow" 
+                                    onclick="paySubscription('PREMIUM', 49)">
+                                Upgrade to Premium – ₹49/mo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 small text-muted">
+                    <i class="bi bi-shield-check me-1"></i> Secure payment via Razorpay • Cancel anytime
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Profile Update Modal -->
+    <div class="modal fade" id="updateProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Update Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="profileUpdateForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Full Name</label>
+                            <input type="text" class="form-control rounded-3" id="updateName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mobile</label>
+                            <input type="tel" class="form-control rounded-3" id="updateMobile">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Location</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-3" id="updateLocation" placeholder="e.g. Jaipur, Rajasthan">
+                                <button class="btn btn-outline-secondary" type="button" onclick="fetchGeoLocation()"><i class="bi bi-geo-alt"></i></button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Profile Photo</label>
+                            <input type="file" class="form-control rounded-3" id="updatePhoto" accept="image/*">
+                            <img id="profilePreview" class="preview-img mt-2 d-none" alt="Preview">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn btn-primary rounded-pill px-4" id="profileSaveBtn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="modal fade" id="notifModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notifications</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="notifList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Modal -->
+    <div class="modal fade" id="applyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content rounded-4">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apply for Job</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="proposalForm">
+                    <div class="modal-body">
+                        <div id="jobBrief"></div>
+                        <input type="hidden" id="applyJobId">
+                        <input type="hidden" id="applyClientEmail">
+                        <input type="hidden" id="applyJobDetails">
+                        <div class="mb-3">
+                            <label class="form-label">Your Bid (₹)</label>
+                            <input type="number" class="form-control" id="bidAmount" min="100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cover Letter</label>
+                            <textarea class="form-control" id="coverLetter" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary rounded-pill" id="submitProposalBtn">Submit Proposal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+     <footer class="footer-custom pt-5 pb-4 border-top bg-white">
+    <div class="container">
+        <div class="row text-md-start text-center gy-4">
+            <div class="col-lg-4 col-md-12">
+                <a class="navbar-brand fw-800 fs-4 mb-3 d-inline-block" href="index.html">
+                    <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" class="me-2" style="height: 100px; width: auto;">
+                   
+                </a>
+                <p class="text-muted pe-lg-5">
+                    The world's most secure marketplace for modern freelancers and ambitious businesses. 
+                    Manage projects, secure payments, and grow your career.
+                </p>
+            </div>
+
+            <div class="col-lg-2 col-6">
+                <h6 class="fw-bold text-dark mb-3">Platform</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="total_jobs.html" class="text-muted text-decoration-none hover-purple">Browse Jobs</a></li>
+                    <li class="mb-2"><a href="freelancers.html" class="text-muted text-decoration-none hover-purple">Find Talent</a></li>
+                    
+                    <li class="mb-2"><a href="escrow.html" class="text-muted text-decoration-none hover-purple">Escrow</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-6">
+                <h6 class="fw-bold text-dark mb-3">Company</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="about.html" class="text-muted text-decoration-none hover-purple">About Us</a></li>
+                    <li class="mb-2"><a href="https://www.linkedin.com/in/hirbee-5930793ab" class="text-muted text-decoration-none hover-purple">Careers <span class="badge bg-primary-subtle text-primary rounded-pill small" style="font-size: 0.7rem;">Hiring</span></a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-muted text-decoration-none hover-purple">Contact Support</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-muted text-decoration-none hover-purple">Terms & Conditions</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-6">
+                <h6 class="fw-bold text-dark mb-3">Resources & Policy</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="help.html" class="text-muted text-decoration-none hover-purple">Help Center</a></li>
+                    <li class="mb-2"><a href="dispute-policy.html" class="text-muted text-decoration-none hover-purple">Dispute Policy</a></li>
+                    <li class="mb-2"><a href="privacy.html" class="text-muted text-decoration-none hover-purple">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="refund.html" class="text-muted text-decoration-none hover-purple">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-6">
+                <h6 class="fw-bold text-dark mb-3">Social Platform</h6>
+                <div class="d-flex justify-content-center justify-content-md-start gap-3">
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/in/hirbee-5930793ab" target="_blank" rel="noopener noreferrer"
+                       class="text-dark fs-5 shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                       style="width: 40px; height: 40px; background: #f8f9fa; transition: all 0.3s;">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/hirbeeofficial/" target="_blank" rel="noopener noreferrer"
+                       class="text-dark fs-5 shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                       style="width: 40px; height: 40px; background: #f8f9fa; transition: all 0.3s;">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5 opacity-10">
+
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="text-muted small mb-0">© 2026 HirBee Inc. All rights reserved. Made for the future of work.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-3">
+                    <span class="small text-muted"><i class="bi bi-globe me-1"></i> English (US)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+
+    <script>
+        // Global variables
+        let allJobsGlobal = [];
+        let recentUpdates = [];
+        let lastSeenCount = parseInt(localStorage.getItem('lastSeenNotifCount') || "0");
+
+        // 💯 MAIN INITIALIZATION
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Freelancer Dashboard Loaded');
+            
+            refreshSubscriptionStatus();
+            refreshUI();
+            
+            const city = localStorage.getItem('location') || "";
+            loadFreelancerFeed(city);
+            checkStatusUpdates();
+            setInterval(checkStatusUpdates, 15000);
+            
+            setupProfileModal();
+
+            setInterval(async () => {
+                if (document.hasFocus()) await refreshSubscriptionStatus();
+            }, 180000);
+        });
+        // IMPROVED FIRST-TIME TOUR – MOBILE OPTIMIZED
+       function startDashboardTour(force = false) {
+    if (!force && localStorage.getItem('freelance_hub_dashboard_tour_completed')) {
+        return;
+    }
+
+    const isMobile = window.innerWidth <= 992; // Desktop > 992px
+
+    // Give layout time to render (especially important on desktop resize)
+    setTimeout(() => {
+        const intro = introJs();
+
+        intro.setOptions({
+            showProgress: true,
+            exitOnOverlayClick: false,
+            nextLabel: 'Next →',
+            prevLabel: '← Back',
+            skipLabel: 'Skip',
+            doneLabel: 'Got It!',
+            scrollToElement: true,
+            scrollPadding: isMobile ? 120 : 60, // more padding on mobile
+            scrollDuration: 600,
+            disableInteraction: true,
+            overlayOpacity: isMobile ? 0.55 : 0.65,
+            tooltipClass: 'custom-intro-tooltip',
+            highlightClass: 'introjs-highlight'
+        });
+
+        // ────────────────────────────────────────────────
+        // MOBILE STEPS (offcanvas + bottom positioning)
+        // ────────────────────────────────────────────────
+        const mobileSteps = [
+            {
+                title: 'Welcome! 👋',
+                intro: 'This is your Freelancer Dashboard. Let’s take a quick tour!'
+            },
+            {
+                element: '#mobileMenu .sidebar-label:nth-of-type(2)', // "Freelancer Menu" label in offcanvas
+                intro: 'Here you can find Find Jobs, My Proposals, Alerts, Earnings & Message.',
+                position: 'bottom'
+            },
+            {
+                element: '#mobileBankBtn',
+                intro: 'Add your bank account here to receive payments securely.',
+                position: 'bottom'
+            },
+            {
+                element: '#mobileMenu [href="message.html"]',
+                intro: 'Chat with clients directly from here.',
+                position: 'bottom'
+            },
+            {
+                element: '#mobileMenu [href="earning.html"]',
+                intro: 'Track all your earnings and withdrawals here.',
+                position: 'bottom'
+            },
+            {
+                element: '#mobileMenu [href="my-proposals.html"]',
+                intro: 'View all your job proposals and their status.',
+                position: 'bottom'
+            },
+            {
+                element: '#filterFormSection',
+                intro: 'Use these filters to find the best jobs for you.',
+                position: 'bottom'
+            },
+            {
+                element: '#feedContainer',
+                intro: 'This is your job feed. Apply to projects you like!',
+                position: 'top'
+            },
+            {
+                title: 'You’re all set! 🚀',
+                intro: 'Tap the 3-bar menu anytime for quick access. Happy freelancing!'
+            }
+        ];
+
+        // ────────────────────────────────────────────────
+        // DESKTOP STEPS (sidebar + right positioning)
+        // ────────────────────────────────────────────────
+        const desktopSteps = [
+            {
+                title: 'Welcome to Your Dashboard! 👋',
+                intro: 'This is your Freelancer control center. Let’s take a quick tour of the key areas.'
+            },
+            {
+                element: '#sidebarAvatar',
+                intro: 'Click here to update your profile photo and personal details so clients can trust you more.',
+                position: 'right'
+            },
+            {
+                element: '#bankBtn',
+                intro: 'Connect your bank account here to withdraw your earnings.',
+                position: 'right'
+            },
+            {
+                element: '#subscriptionNavItem button',
+                intro: 'Upgrade to Premium for unlimited bids and priority features.',
+                position: 'right'
+            },
+            {
+                element: '#findJobsLink',
+                intro: 'Find new jobs here — your personalized feed is waiting!',
+                position: 'right'
+            },
+            {
+                element: '#earningsLink',
+                intro: 'Track all your earnings and transaction history here.',
+                position: 'right'
+            },
+            {
+                element: '#filterFormSection',
+                intro: 'Use these filters to find jobs that match your skills, budget, and preferred work mode.',
+                position: 'bottom'
+            },
+            {
+                element: '#feedContainer',
+                intro: 'This is your personalized project feed. Click "Apply" on jobs you like to submit a bid.',
+                position: 'top'
+            },
+            {
+                title: 'You’re all set! 🚀',
+                intro: 'Happy freelancing! Use the sidebar anytime for quick access.'
+            }
+        ];
+
+        // Choose correct steps based on screen size
+        intro.addSteps(isMobile ? mobileSteps : desktopSteps);
+
+        // Mobile-specific tooltip styling
+        if (isMobile) {
+            intro.setOption('tooltipClass', 'custom-intro-tooltip mobile-friendly-tooltip');
+        }
+
+        // Refresh layout after each step (fixes positioning glitches)
+        intro.onchange(() => {
+            setTimeout(() => intro.refresh(), 400);
+        });
+
+        // Complete & exit handlers
+        intro.oncomplete(() => {
+            localStorage.setItem('freelance_hub_dashboard_tour_completed', 'true');
+        });
+
+        intro.onexit(() => {
+            localStorage.setItem('freelance_hub_dashboard_tour_completed', 'true');
+        });
+
+        intro.start();
+    }, isMobile ? 1800 : 800); // longer delay on mobile for layout to settle
+}
+        // ================================================
+        // SUBSCRIPTION STATUS – ALWAYS FROM SERVER (NO LOCALSTORAGE)
+        // ================================================
+
+        async function refreshSubscriptionStatus() {
+            const email = localStorage.getItem('userEmail');
+            if (!email) {
+                updateVerifiedUI(false);
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://hirbee-1.onrender.com/api/auth/user?email=${email}&_=${Date.now()}`);
+
+                if (!res.ok) {
+                    console.warn(`User status fetch failed: ${res.status} ${res.statusText}`);
+                    updateVerifiedUI(false);
+                    return;
+                }
+
+                const user = await res.json();
+
+                const plan = user.subscription_plan || 'FREE';
+                const status = user.subscription_status || 'NONE';
+                const endDateStr = user.subscription_end_date;
+                const isTrending = user.is_trending || false;
+
+                let isSubscribed = false;
+
+                if (plan !== 'FREE' && plan !== null && plan !== '') {
+                    if (status === 'ACTIVE') {
+                        if (!endDateStr) {
+                            isSubscribed = true;
+                        } else {
+                            const expiry = new Date(endDateStr);
+                            const now = new Date();
+                            if (!isNaN(expiry.getTime())) {
+                                isSubscribed = expiry > now;
+                            }
+                        }
+                    }
+                }
+
+                updateVerifiedUI(isSubscribed && isTrending, plan);
+
+            } catch (err) {
+                console.error("Failed to refresh subscription:", err);
+                updateVerifiedUI(false);
+            }
+        }
+
+       function updateVerifiedUI(isSubscribed, planName = 'Free') {
+    console.log('🔵 Updating verified UI:', isSubscribed, planName);
+
+    ['headerVerifiedBadge', 'sidebarVerifiedBadge', 'mobileSidebarVerifiedBadge'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('d-none', !isSubscribed);
+    });
+
+    const subNavs = [document.getElementById('subscriptionNavItem'), document.getElementById('mobileSubscriptionNavItem')];
+    subNavs.forEach(subNav => {
+        if (subNav) {
+            // Agar user already Premium hai toh disabled button dikhao
+            if (isSubscribed && planName.toUpperCase() === 'PREMIUM') {
+                subNav.innerHTML = `
+                    <button class="btn btn-sm w-100 rounded-pill py-2 mb-2 shadow-sm fw-bold" style="background: #E3F2FD; color: #1565C0; border: 1px solid #90CAF9;" disabled>
+                        <i class="bi bi-patch-check-fill me-2"></i>Premium Member
+                    </button>`;
+            } else {
+                // Agar Starter hai ya No Plan hai toh Upgrade button dikhao
+                subNav.innerHTML = `
+                    <button class="btn btn-sm w-100 rounded-pill py-2 mb-2 shadow-sm fw-bold" style="background: #FFF9E6; color: #D4A017; border: 1px solid #FFE5A3;" data-bs-toggle="modal" data-bs-target="#subscriptionModal">
+                        <i class="bi bi-patch-check-fill me-2"></i>Upgrade to Premium
+                    </button>`;
+            }
+        }
+    });
+}
+        // ================================================
+// RAZORPAY PAYMENT – UPDATED FOR STARTER & PREMIUM
+// ================================================
+
+async function paySubscription(plan, amount) {
+    const email = localStorage.getItem('userEmail');
+    if (!email) return alert("Please login first");
+
+    // 1. Agar STARTER plan hai toh payment gateway bypass karo
+    if (plan.toUpperCase() === 'STARTER' || amount === 0) {
+        console.log('🆓 Activating Free Starter Plan...');
+        await verifySubscriptionOnServer('STARTER', 'FREE_PLAN_NO_ID');
+        return;
+    }
+
+    // 2. PREMIUM plan ke liye Razorpay (Force amount to 49)
+    const finalAmount = 49; // Backend se sync rakhne ke liye hardcoded 49
+    
+    const options = {
+        "key": "rzp_test_Rz1yk3tgGSCQya",
+        "amount": finalAmount * 100, // Razorpay takes paise
+        "currency": "INR",
+        "name": "HirBee Premium",
+        "description": `Upgrade to PREMIUM for ₹${finalAmount}`,
+        "handler": async function (response) {
+            console.log('💳 Payment Success:', response);
+            await verifySubscriptionOnServer('PREMIUM', response.razorpay_payment_id);
+        },
+        "prefill": {
+            "name": localStorage.getItem('fullName') || "Freelancer",
+            "email": email,
+            "contact": localStorage.getItem('mobile') || ""
+        },
+        "theme": { "color": "#8C4EC9" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function (response) {
+        alert("Payment Failed: " + (response.error.description || "Unknown error"));
+    });
+    rzp.open();
+}
+
+async function verifySubscriptionOnServer(plan, paymentId) {
+    const email = localStorage.getItem('userEmail');
+    const payload = {
+        email: email,
+        payment_id: paymentId,
+        plan: plan.toUpperCase() // Ensure STARTER or PREMIUM
+    };
+
+    try {
+        const res = await fetch('https://hirbee-1.onrender.com/api/auth/subscription/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            console.log('🎉 Status updated:', data);
+
+            // Success Overlay dikhao
+            const overlay = document.getElementById('paymentSuccessOverlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+                setTimeout(() => { overlay.style.display = 'none'; }, 3000);
+            }
+
+            // UI Refresh
+            await refreshSubscriptionStatus();
+
+            const subModalEl = document.getElementById('subscriptionModal');
+            if (subModalEl) {
+                const subModal = bootstrap.Modal.getInstance(subModalEl);
+                if (subModal) subModal.hide();
+            }
+
+            // Page reload taaki trending status aur badges dikhne lagein
+            setTimeout(() => { location.reload(); }, 2000);
+        } else {
+            alert("Activation failed: " + (data.error || "Unknown server error"));
+        }
+    } catch (err) {
+        console.error("Subscription Error:", err);
+        alert("Server connection failed. Please try again.");
+    }
+}
+
+        // ================================================
+        // UI REFRESH & PROFILE MODAL SETUP
+        // ================================================
+
+        function refreshUI() {
+            const name = localStorage.getItem('fullName') || "Freelancer";
+            const loc = localStorage.getItem('location') || "Not Set";
+            const img = localStorage.getItem('profileImage');
+            
+            const desktopName = document.getElementById('freelancerName');
+            const mobileName = document.getElementById('mobileFreelancerName');
+            if(desktopName) desktopName.textContent = name;
+            if(mobileName) mobileName.textContent = name;
+            
+            if(document.getElementById('headerUserName')) document.getElementById('headerUserName').textContent = name.split(' ')[0];
+            
+            const desktopLocation = document.getElementById('displayLocation');
+            const mobileLocation = document.getElementById('mobileDisplayLocation');
+            if(desktopLocation) desktopLocation.innerHTML = `<i class="bi bi-geo-alt-fill text-danger"></i> ${loc}`;
+            if(mobileLocation) mobileLocation.innerHTML = `<i class="bi bi-geo-alt-fill text-danger"></i> ${loc}`;
+            
+            if(img && img !== "null" && img !== "") {
+                const desktopAvatar = document.getElementById('sidebarAvatar');
+                const mobileAvatar = document.getElementById('mobileSidebarAvatar');
+                if(desktopAvatar) {
+                    desktopAvatar.innerHTML = `<img src="${img}" class="sidebar-avatar-img">`;
+                }
+                if(mobileAvatar) {
+                    mobileAvatar.innerHTML = `<img src="${img}" class="sidebar-avatar-img">`;
+                }
+                if(document.getElementById('navProfileIcon')) {
+                    document.getElementById('navProfileIcon').innerHTML = `<img src="${img}" class="nav-profile-img">`;
+                }
+            }
+        }
+
+        function setupProfileModal() {
+            const modalElement = document.getElementById('updateProfileModal');
+            if (modalElement) {
+                modalElement.addEventListener('show.bs.modal', function () {
+                    console.log('📱 Profile modal opened');
+                    document.getElementById('updateName').value = localStorage.getItem('fullName') || "";
+                    document.getElementById('updateMobile').value = localStorage.getItem('mobile') || "";
+                    document.getElementById('updateLocation').value = localStorage.getItem('location') || "";
+                    
+                    const existingImg = localStorage.getItem('profileImage');
+                    const preview = document.getElementById('profilePreview');
+                    if (preview) {
+                        if(existingImg && existingImg !== "null") {
+                            preview.src = existingImg;
+                            preview.classList.remove('d-none');
+                        } else {
+                            preview.classList.add('d-none');
+                        }
+                    }
+                });
+            }
+        }
+
+        // ================================================
+        // LOGOUT – CLEAN & SAFE
+        // ================================================
+
+        function logout() {
+            console.log('🔒 LOGOUT');
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        // ================================================
+        // PROFILE IMAGE PREVIEW & GEO-LOCATION
+        // ================================================
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const output = document.getElementById('profilePreview');
+                    output.src = e.target.result;
+                    output.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        document.getElementById('profileUpdateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('profileSaveBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+            
+            const payload = {
+                email: localStorage.getItem('userEmail'),
+                fullName: document.getElementById('updateName').value,
+                mobile: document.getElementById('updateMobile').value,
+                location: document.getElementById('updateLocation').value,
+                profileImage: localStorage.getItem('profileImage')
+            };
+            
+            const photoFile = document.getElementById('updatePhoto').files[0];
+            if (photoFile) payload.profileImage = await toBase64(photoFile);
+            
+            try {
+                const response = await fetch('https://hirbee-1.onrender.com/api/auth/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('fullName', data.fullName);
+                    localStorage.setItem('mobile', data.mobile);
+                    localStorage.setItem('location', data.location);
+                    localStorage.setItem('profileImage', data.profileImage);
+                    
+                    const modalInstance = bootstrap.Modal.getInstance(document.getElementById('updateProfileModal'));
+                    if(modalInstance) modalInstance.hide();
+                    
+                    document.getElementById('profileSuccessOverlay').style.display = 'flex';
+                    setTimeout(() => { location.reload(); }, 2000);
+                } else {
+                    alert("Failed to update profile.");
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = 'Save Changes';
+                }
+            } catch (err) { 
+                console.error(err);
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'Save Changes';
+            }
+        });
+
+        function fetchGeoLocation() {
+            const input = document.getElementById('updateLocation');
+            if (navigator.geolocation) {
+                input.value = "Detecting...";
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+                        const data = await res.json();
+                        input.value = data.address.city || data.address.town || "Global";
+                    } catch (err) { 
+                        input.value = "Unable to detect city"; 
+                    }
+                }, () => { 
+                    input.value = "Permission denied"; 
+                });
+            }
+        }
+
+        // ================================================
+        // JOB FEED & FILTERING (NOW FULLY WORKING)
+        // ================================================
+
+        
+
+        async function loadFreelancerFeed(city) {
+            const container = document.getElementById('feedContainer');
+            const myLocation = city || localStorage.getItem('location') || "GLOBAL";
+            try {
+                const email = localStorage.getItem('userEmail');
+                const response = await fetch(`https://hirbee-1.onrender.com/api/jobs/freelancer-feed?city=${encodeURIComponent(myLocation)}&email=${email}`);
+                if (!response.ok) throw new Error("Failed to load jobs");
+
+                allJobsGlobal = await response.json(); // Save all jobs here
+                renderJobs(allJobsGlobal);             // Show all jobs initially
+            } catch (err) {
+                container.innerHTML = `<div class="text-center p-5 text-danger w-100">
+                    <i class="bi bi-exclamation-triangle fs-1"></i>
+                    <h5 class="mt-3">Error loading jobs</h5>
+                    <p>${err.message}</p>
+                </div>`;
+            }
+        }
+
+        function renderJobs(jobs) {
+            const container = document.getElementById('feedContainer');
+            container.innerHTML = ''; // Clear previous content
+
+            if (!Array.isArray(jobs) || jobs.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5 text-muted">
+                        <i class="bi bi-search fs-1"></i>
+                        <h5 class="mt-3">No matching jobs found</h5>
+                        <small>Try adjusting your filters or clear them</small>
+                    </div>`;
+                return;
+            }
+
+            const myLocation = (localStorage.getItem('location') || "").toLowerCase();
+
+            jobs.forEach(job => {
+                const jobLoc = (job.location || "Global").toLowerCase();
+                const isLocal = myLocation && (jobLoc.includes(myLocation) || myLocation.includes(jobLoc));
+
+                const card = `
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 h-100 job-card">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="badge ${isLocal ? 'bg-success' : 'bg-info'}">${isLocal ? 'Local' : 'Global'}</span>
+                                <small class="text-muted"><i class="bi bi-laptop"></i> ${job.mode || 'REMOTE'}</small>
+                            </div>
+                            <h6 class="fw-bold mt-2" style="height: 40px; overflow: hidden;">${job.details}</h6>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="text-success fw-bold">₹${job.budget}</span>
+                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="prepareApplyModal(${job.id})">Apply Now</button>
+                            </div>
+                        </div>
+                    </div>`;
+                container.innerHTML += card;
+            });
+        }
+
+        function applyFilters() {
+            console.log("Filters applied – now filtering jobs...");
+
+            const keyword   = document.getElementById('filterKeyword')?.value?.toLowerCase().trim()   || '';
+            const location  = document.getElementById('filterLocation')?.value?.toLowerCase().trim()  || '';
+            const maxBudget = parseFloat(document.getElementById('filterAmount')?.value) || Infinity;
+            const mode      = document.getElementById('filterMode')?.value?.toLowerCase()            || 'all';
+
+            const filtered = allJobsGlobal.filter(job => {
+                const matchKeyword = !keyword || 
+                    (job.details && job.details.toLowerCase().includes(keyword));
+
+                const matchLocation = !location || 
+                    (job.location && job.location.toLowerCase().includes(location));
+
+                const matchBudget = !isNaN(job.budget) && job.budget <= maxBudget;
+
+                const matchMode = mode === 'all' || 
+                    (job.mode && job.mode.toLowerCase() === mode);
+
+                return matchKeyword && matchLocation && matchBudget && matchMode;
+            });
+
+            renderJobs(filtered);
+        }
+
+        function clearFilters() {
+            document.getElementById('filterKeyword').value = '';
+            document.getElementById('filterLocation').value = '';
+            document.getElementById('filterAmount').value = '';
+            document.getElementById('filterMode').value = 'all';
+            renderJobs(allJobsGlobal);
+        }
+
+        window.prepareApplyModal = function(jobId) {
+            const job = allJobsGlobal.find(j => j.id === jobId);
+            if (job) openApplyModal(job);
+        }
+
+        // ================================================
+        // NOTIFICATIONS & PROPOSALS
+        // ================================================
+
+        async function checkStatusUpdates() {
+            const email = localStorage.getItem('userEmail');
+            const desktopBadge = document.getElementById('notifBadge');
+            const mobileBadge = document.getElementById('mobileNotifBadge');
+            if(!email) return;
+            try {
+                const res = await fetch(`https://hirbee-1.onrender.com/api/proposals/my-list?email=${email}`);
+                const proposals = await res.json();
+                const updates = proposals.filter(p => p.status !== 'PENDING');
+                recentUpdates = updates;
+                const unseenCount = updates.length - lastSeenCount;
+                if(unseenCount > 0) { 
+                    if(desktopBadge) {
+                        desktopBadge.innerText = unseenCount; 
+                        desktopBadge.classList.remove('d-none'); 
+                    }
+                    if(mobileBadge) {
+                        mobileBadge.innerText = unseenCount; 
+                        mobileBadge.classList.remove('d-none'); 
+                    }
+                } else { 
+                    if(desktopBadge) desktopBadge.classList.add('d-none'); 
+                    if(mobileBadge) mobileBadge.classList.add('d-none'); 
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function showNotifications() {
+            const list = document.getElementById('notifList');
+            lastSeenCount = recentUpdates.length;
+            localStorage.setItem('lastSeenNotifCount', lastSeenCount);
+            document.getElementById('notifBadge')?.classList.add('d-none');
+            document.getElementById('mobileNotifBadge')?.classList.add('d-none');
+            if(recentUpdates.length === 0) {
+                list.innerHTML = '<div class="p-4 text-center text-muted">No updates yet.</div>';
+            } else {
+                list.innerHTML = [...recentUpdates].reverse().map(u => `
+                    <div class="list-group-item p-3 border-0 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0 small"><b>Project Update:</b></p>
+                        <span class="badge ${u.status === 'ACCEPTED' ? 'bg-success' : 'bg-danger'}">${u.status}</span>
+                    </div>
+                    <p class="mb-0 small text-muted">${u.jobDetails}</p>
+                    </div>`).join('');
+            }
+            new bootstrap.Modal(document.getElementById('notifModal')).show();
+        }
+
+        // ================================================
+        // APPLY MODAL & PROPOSAL SUBMISSION – WITH BID LIMIT CHECK
+        // ================================================
+
+        async function checkWeeklyBidLimit() {
+            const email = localStorage.getItem('userEmail');
+            if (!email) return true;
+
+            try {
+                const res = await fetch(`https://hirbee-1.onrender.com/api/proposals/bid-count?email=${email}`);
+                if (!res.ok) return true;
+
+                const { count } = await res.json();
+
+                const subRes = await fetch(`https://hirbee-1.onrender.com/api/auth/user?email=${email}`);
+                const user = await subRes.json();
+                const plan = user.subscription_plan || 'FREE';
+
+                if ((plan === 'FREE' || plan === null || plan === 'NONE') && count >= 3) {
+                    return false;
+                }
+                return true;
+            } catch (err) {
+                console.error("Bid limit check failed:", err);
+                return true;
+            }
+        }
+
+        function openApplyModal(job) {
+            checkWeeklyBidLimit().then(canBid => {
+                if (!canBid) {
+                    showErrorPopup("You have reached the weekly limit of 3 bids as a free user. Upgrade to Premium for unlimited proposals.");
+                    return;
+                }
+
+                document.getElementById('jobBrief').innerHTML = `
+                    <h6 class="fw-bold text-primary">Job Summary</h6>
+                    <p class="small mb-1">${job.details}</p>
+                    <div class="small text-muted">Client: ${job.clientEmail} | Budget: ₹${job.budget}</div>`;
+                document.getElementById('applyJobId').value = job.id;
+                document.getElementById('applyClientEmail').value = job.clientEmail;
+                document.getElementById('applyJobDetails').value = job.details;
+                new bootstrap.Modal(document.getElementById('applyModal')).show();
+            });
+        }
+
+        document.getElementById('proposalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitProposalBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+            
+            const payload = {
+                jobId: document.getElementById('applyJobId').value,
+                clientEmail: document.getElementById('applyClientEmail').value,
+                freelancerEmail: localStorage.getItem('userEmail'),
+                jobDetails: document.getElementById('applyJobDetails').value,
+                bidAmount: parseFloat(document.getElementById('bidAmount').value),
+                coverLetter: document.getElementById('coverLetter').value,
+                status: "PENDING"
+            };
+            
+            try {
+                const response = await fetch('https://hirbee-1.onrender.com/api/proposals/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (response.ok) {
+                    const modalInstance = bootstrap.Modal.getInstance(document.getElementById('applyModal'));
+                    if(modalInstance) modalInstance.hide();
+                    document.getElementById('applicationSuccessOverlay').style.display = 'flex';
+                    setTimeout(() => { window.location.href = "my-proposals.html"; }, 2000);
+                } else {
+                    const msg = await response.text();
+                    showErrorPopup(msg);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Submit Proposal';
+                }
+            } catch (err) { 
+                showErrorPopup("Server error. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Proposal';
+            }
+        });
+
+        // ================================================
+        // CUSTOM ERROR POPUP FUNCTIONS
+        // ================================================
+
+        function showErrorPopup(message) {
+            let overlay = document.getElementById('errorPopupOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'errorPopupOverlay';
+                overlay.innerHTML = `
+                    <div class="error-popup">
+                        <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                        <h3 class="error-title">Limit Reached!</h3>
+                        <p class="error-message" id="errorMessageText">${message}</p>
+                        <div class="mt-4">
+                            <a href="subscription.html" class="btn error-btn-upgrade me-2">
+                                Upgrade Now <i class="bi bi-rocket-takeoff-fill ms-2"></i>
+                            </a>
+                            <button onclick="hideErrorPopup()" class="btn error-btn-close">
+                                Close
+                            </button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(overlay);
+            } else {
+                document.getElementById('errorMessageText').innerText = message;
+            }
+
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('show'), 10);
+        }
+
+        function hideErrorPopup() {
+            const overlay = document.getElementById('errorPopupOverlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+                setTimeout(() => overlay.style.display = 'none', 400);
+            }
+        }
+
+        // ================================================
+        // FINAL LOG
+        // ================================================
+
+        console.log('✅ Freelancer Dashboard Ready – Filtering Fully Working!');
+    </script>
+
+    <script src="/script/freelancer_dashboard.js"></script>
+</body>
+</html>

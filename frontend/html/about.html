@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | HirBee</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/about.css">
+    <link rel="icon" type="image/png" href="/assets/images/Hirqqq.png">
+
+    <style>
+        .navbar {
+            min-height: 80px !important;
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
+        .navbar-brand img {
+            max-height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .navbar-brand {
+            padding: 0 !important;
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-nav {
+                text-align: center;
+                padding-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top py-3 bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bolder fs-3 text-brand-primary d-flex align-items-center" href="index.html">
+                <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" class="me-2" style="height: 80px; width: auto;">
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link dark-nav px-3" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link dark-nav px-3" href="total_jobs.html">Find Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link dark-nav active-link px-3" href="about.html">About</a></li>
+                </ul>
+                <div class="d-flex flex-column flex-lg-row align-items-center gap-3 mt-3 mt-lg-0">
+                    <button class="btn btn-link dark-nav text-decoration-none fw-bold" onclick="location.href='login.html'">Login</button>
+                    <button class="btn btn-brand-primary rounded-pill px-4 py-2 fw-bold" onclick="location.href='signup.html'">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Content -->
+    <div class="about-container py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="glass-card mb-5 text-center p-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <h1 class="display-5 fw-bold mb-4"><span class="text-gradient">Our Vision</span></h1>
+                                <p class="lead text-dark">Our vision is simple yet powerful — to redefine the way people connect for work.</p>
+                                <div class="mission-bar mx-auto mb-4"></div>
+                                <p class="text-secondary">We believe freelancing should be more than just remote projects; it should also empower everyday opportunities right around the corner. We aim to create a platform where skills meet needs instantly, whether it’s building a website or fixing a bicycle.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-4">
+                            <div class="value-card p-4 text-center">
+                                <div class="value-icon mb-3"><i class="bi bi-cpu"></i></div>
+                                <h4 class="fw-bold">Innovation</h4>
+                                <p class="small text-muted">Redefining boundaries and finding new ways to connect talent.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="value-card p-4 text-center">
+                                <div class="value-icon mb-3"><i class="bi bi-shield-check"></i></div>
+                                <h4 class="fw-bold">Trust</h4>
+                                <p class="small text-muted">Building a secure space where every project is backed by integrity.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="value-card p-4 text-center">
+                                <div class="value-icon mb-3"><i class="bi bi-people"></i></div>
+                                <h4 class="fw-bold">Community</h4>
+                                <p class="small text-muted">Where local talent gets the recognition and growth they deserve.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card mission-section text-center p-5">
+                        <h2 class="fw-bold mb-4"><span class="text-gradient">Our Mission</span></h2>
+                        <p class="lead mb-4">Our mission is to turn side hustles into opportunities, and opportunities into lasting impact.</p>
+                        <div class="mission-bar mx-auto mb-4"></div>
+                        <p class="text-secondary mb-0">Driven by innovation, trust, and community, we build a space where freelancers grow and clients find solutions effortlessly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-custom pt-5 pb-4 border-top bg-white">
+        <div class="container">
+            <div class="row text-md-start text-center gy-4">
+                <div class="col-lg-4 col-md-12">
+                    <a class="navbar-brand fw-800 fs-4 mb-3 d-inline-block" href="index.html">
+                        <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" class="me-2" style="height: 70px; width: auto;">
+                    </a>
+                    <p class="text-muted pe-lg-5">
+                        The world's most secure marketplace for modern freelancers and ambitious businesses. 
+                        Manage projects, secure payments, and grow your career.
+                    </p>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Platform</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="total_jobs.html" class="text-muted text-decoration-none hover-purple">Browse Jobs</a></li>
+                        <li class="mb-2"><a href="freelancers.html" class="text-muted text-decoration-none hover-purple">Find Talent</a></li>
+                        <li class="mb-2"><a href="enterprise.html" class="text-muted text-decoration-none hover-purple">Enterprise</a></li>
+                        <li class="mb-2"><a href="escrow.html" class="text-muted text-decoration-none hover-purple">Escrow</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Company</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="about.html" class="text-muted text-decoration-none hover-purple">About Us</a></li>
+                        <li class="mb-2"><a href="careers.html" class="text-muted text-decoration-none hover-purple">Careers <span class="badge bg-primary-subtle text-primary rounded-pill small" style="font-size: 0.7rem;">Hiring</span></a></li>
+                        <li class="mb-2"><a href="contact.html" class="text-muted text-decoration-none hover-purple">Contact Support</a></li>
+                        <li class="mb-2"><a href="terms.html" class="text-muted text-decoration-none hover-purple">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Resources & Policy</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="help.html" class="text-muted text-decoration-none hover-purple">Help Center</a></li>
+                        <li class="mb-2"><a href="dispute-policy.html" class="text-muted text-decoration-none hover-purple">Dispute Policy</a></li>
+                        <li class="mb-2"><a href="privacy.html" class="text-muted text-decoration-none hover-purple">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="refund.html" class="text-muted text-decoration-none hover-purple">Refund Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Social Platform</h6>
+                    <div class="d-flex justify-content-center justify-content-md-start gap-3">
+                        <a href="https://www.linkedin.com/in/hirbee-5930793ab" target="_blank" rel="noopener noreferrer"
+                           class="text-dark fs-5 shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                           style="width: 40px; height: 40px; background: #f8f9fa; transition: all 0.3s;">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="https://www.instagram.com/hirbeeofficial/" target="_blank" rel="noopener noreferrer"
+                           class="text-dark fs-5 shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                           style="width: 40px; height: 40px; background: #f8f9fa; transition: all 0.3s;">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5 opacity-10">
+
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-muted small mb-0">© 2026 HirBee Inc. All rights reserved. Made for the future of work.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-3">
+                        <span class="small text-muted"><i class="bi bi-globe me-1"></i> English (US)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../script/session.js"></script>
+
+
+</body>
+    <script src="../script/session.js"></script>
+
+</html>

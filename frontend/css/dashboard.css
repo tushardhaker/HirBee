@@ -1,0 +1,173 @@
+/* ================================================================
+   HirBee - ROYAL PURPLE THEME (dashboard.css)
+   ================================================================ */
+
+:root {
+    --bg-light: #F6EEFF;       /* Lavender Mist */
+    --primary-purple: #8C4EC9; /* Royal Purple */
+    --secondary-lilac: #DFC6F9; /* Soft Lilac */
+    --accent-orchid: #B979F7;  /* Orchid Glow */
+    --text-dark: #2D1B41;      /* Deep Eggplant */
+    --white: #ffffff;
+    --success-green: #2ecc71;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--bg-light) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--text-dark);
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    background: var(--white) !important;
+    border-right: 1px solid var(--secondary-lilac);
+    display: flex;
+    flex-direction: column;
+}
+
+.brand h4 {
+    color: var(--primary-purple) !important;
+    letter-spacing: -0.5px;
+}
+
+/* Profile Section in Sidebar */
+.profile-section {
+    background: var(--bg-light);
+    border-radius: 20px;
+    padding: 1.5rem 1rem;
+    margin: 0 10px 20px 10px;
+    border: 1px solid var(--secondary-lilac);
+}
+
+.avatar-circle {
+    background: var(--primary-purple) !important;
+    box-shadow: 0 4px 10px rgba(140, 78, 201, 0.2);
+}
+
+/* Navigation Links */
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 600;
+    padding: 10px 15px !important;
+    transition: all 0.2s ease;
+}
+
+.nav-link i {
+    color: var(--primary-purple);
+}
+
+.nav-link.active {
+    background-color: var(--primary-purple) !important;
+    color: var(--white) !important;
+    box-shadow: 0 4px 12px rgba(140, 78, 201, 0.2);
+}
+
+.nav-link.active i {
+    color: var(--white);
+}
+
+.nav-link:hover:not(.active) {
+    background-color: var(--secondary-lilac);
+    color: var(--primary-purple) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-purple) !important;
+    border-color: var(--primary-purple) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-orchid) !important;
+    border-color: var(--accent-orchid) !important;
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--primary-purple) !important;
+    border-color: var(--primary-purple) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-purple) !important;
+    color: var(--white) !important;
+}
+
+/* Bank Button (Modified to match Purple Theme) */
+.bank-btn {
+    background: linear-gradient(45deg, var(--primary-purple), var(--accent-orchid)) !important;
+    border: none !important;
+}
+
+/* Filter Section */
+.filter-section {
+    background: var(--white);
+    border: 1px solid var(--secondary-lilac) !important;
+    box-shadow: 0 10px 30px rgba(140, 78, 201, 0.05) !important;
+}
+
+.form-control, .form-select {
+    border: 1px solid var(--secondary-lilac) !important;
+    padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-purple) !important;
+    box-shadow: 0 0 0 0.25rem rgba(140, 78, 201, 0.1) !important;
+}
+
+/* Cards (Job Feed) */
+.card {
+    border: 1px solid var(--secondary-lilac) !important;
+    border-radius: 18px !important;
+    transition: all 0.3s ease !important;
+}
+
+.card:hover {
+    box-shadow: 0 12px 24px rgba(140, 78, 201, 0.1) !important;
+    border-color: var(--primary-purple) !important;
+}
+
+.border-start.border-success {
+    border-left-color: var(--primary-purple) !important;
+}
+
+#localJobsCount {
+    color: var(--primary-purple) !important;
+}
+
+/* Modal Styling */
+.modal-content {
+    border: none;
+    box-shadow: 0 20px 50px rgba(45, 27, 65, 0.2);
+}
+
+.modal-header {
+    background-color: var(--bg-light) !important;
+    border-bottom: 1px solid var(--secondary-lilac);
+}
+
+#jobBrief {
+    background-color: var(--bg-light) !important;
+    border: 1px solid var(--secondary-lilac);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-lilac);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-purple);
+}

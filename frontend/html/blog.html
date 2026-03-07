@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Stories & Blog | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #F6EEFF;       /* Lavender Mist */
+            --primary: #8C4EC9;        /* Royal Purple */
+            --secondary: #DFC6F9;      /* Soft Lilac */
+            --accent: #B979F7;         /* Orchid Glow */
+            --dark-accent: #0f172a;    /* Deep Navy */
+            --text-main: #2D1B41;      /* Dark Purple Text */
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-color); /* Themed background */
+        }
+
+        .fw-800 { font-weight: 800; }
+
+        /* Dynamic Navigation Bar */
+        .nav-top {
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--secondary);
+        }
+
+        .btn-back {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--secondary);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateX(-3px);
+        }
+
+        /* Hero Section */
+        .blog-hero {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        /* Featured Post Card */
+        .featured-card {
+            background: var(--white);
+            border-radius: 30px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 20px 40px rgba(45, 27, 65, 0.05);
+            margin-bottom: 50px;
+        }
+
+        /* Standard Blog Card */
+        .blog-card {
+            background: var(--white);
+            border-radius: 20px;
+            border: 1px solid transparent;
+            transition: 0.3s ease;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(140, 78, 201, 0.1);
+        }
+
+        .card-img-wrapper {
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .blog-card:hover .card-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .category-badge {
+            background: var(--bg-color);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .read-more-link {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .read-more-link:hover {
+            gap: 10px;
+            color: var(--accent);
+        }
+
+        /* Pagination */
+        .page-link {
+            color: var(--primary);
+            border: none;
+            margin: 0 5px;
+            border-radius: 10px !important;
+            font-weight: 600;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        section { padding-bottom: 80px; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="javascript:void(0)" onclick="goToDashboard()" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+       
+        </div>
+    </nav>
+
+    <header class="blog-hero">
+        <div class="container">
+            <h1 class="display-4 fw-800">Success <span style="color: var(--primary);">Stories</span></h1>
+            <p class="text-muted">Explore tips, trends, and triumphs from our global community.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="featured-card">
+            <div class="row g-0">
+                <div class="col-lg-7">
+                    <img src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=1200" class="img-fluid h-100" style="object-fit: cover;" alt="Featured">
+                </div>
+                <div class="col-lg-5 p-4 p-md-5 d-flex flex-column justify-content-center">
+                    <span class="category-badge mb-3 w-fit-content" style="width: fit-content;">Editor's Pick</span>
+                    <h2 class="fw-800 mb-3">The Future of Remote Work in 2026: What Freelancers Need to Know</h2>
+                    <p class="text-muted">From AI-driven workflows to decentralized payments, the landscape is shifting. Discover how to stay ahead of the curve.</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="rounded-circle bg-secondary me-2" style="width: 40px; height: 40px;"></div>
+                        <div>
+                            <small class="d-block fw-bold">By Sarah Jenkins</small>
+                            <small class="text-muted">Jan 20, 2026 • 8 min read</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <article class="blog-card shadow-sm">
+                    <div class="card-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800" alt="Post">
+                    </div>
+                    <div class="card-body p-4">
+                        <span class="category-badge mb-2 d-inline-block">Productivity</span>
+                        <h5 class="fw-bold mb-3 mt-2">5 Tools to Manage Multi-Client Workflows Without Burnout</h5>
+                        <p class="text-muted small">Learn how top freelancers organize their day to maximize billable hours...</p>
+                        <a href="#" class="read-more-link">Read Story <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <article class="blog-card shadow-sm">
+                    <div class="card-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800" alt="Post">
+                    </div>
+                    <div class="card-body p-4">
+                        <span class="category-badge mb-2 d-inline-block">Finance</span>
+                        <h5 class="fw-bold mb-3 mt-2">Securing Your Vault: Why Secure Payments Matter</h5>
+                        <p class="text-muted small">A deep dive into HirBee's escrow and bank security features...</p>
+                        <a href="#" class="read-more-link">Read Story <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <article class="blog-card shadow-sm">
+                    <div class="card-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800" alt="Post">
+                    </div>
+                    <div class="card-body p-4">
+                        <span class="category-badge mb-2 d-inline-block">Community</span>
+                        <h5 class="fw-bold mb-3 mt-2">Scaling from Solo Freelancer to a Full-Scale Agency</h5>
+                        <p class="text-muted small">Interview with David K., who hired 12 developers using our platform...</p>
+                        <a href="#" class="read-more-link">Read Story <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <section class="container mt-5">
+        <div class="p-5 rounded-4 text-center" style="background: var(--dark-accent); color: white;">
+            <h3 class="fw-800">Never miss a story</h3>
+            <p class="opacity-75">Get the latest freelance trends delivered to your inbox weekly.</p>
+            <div class="col-md-6 mx-auto mt-4">
+                <div class="input-group">
+                    <input type="email" class="form-control rounded-start-pill border-0 px-4" placeholder="Your email address">
+                    <button class="btn btn-primary px-4 rounded-end-pill" style="background: var(--primary); border: none;">Join Newsletter</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-5 text-center text-muted">
+        <p class="small">© 2026 HirBee Platform. All stories are copyrighted.</p>
+    </footer >
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /**
+         * Dynamic Dashboard Redirect
+         */
+        function goToDashboard() {
+            const userRole = localStorage.getItem('userRole'); // 'FREELANCER' or 'CLIENT'
+
+            if (userRole === 'FREELANCER') {
+                window.location.href = 'freelancer-dashboard.html';
+            } else if (userRole === 'CLIENT') {
+                window.location.href = 'client-dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+    <script src="../script/session.js"></script>
+
+</body>
+</html>

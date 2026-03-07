@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Wallet | Local-Lance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <style>
+        :root { 
+            --primary-purple: #8C4EC9; 
+            --bg-lavender: #F6EEFF; 
+            --secondary-lilac: #DFC6F9;
+            --accent-purple: #B979F7;
+            --text-dark: #2D1B41;
+            --dark-black: #111111;
+            --dark-gray: #222222;
+            --gradient-purple: linear-gradient(135deg, #8C4EC9 0%, #B979F7 100%);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; 
+            color: #1e293b; 
+            margin: 0; 
+        }
+
+        /* Brand Color */
+        .brand-text { 
+            color: var(--primary-purple) !important; 
+            font-weight: 800; 
+            letter-spacing: -0.5px; 
+        }
+
+        /* Sidebar Desktop */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: white;
+            border-right: 1px solid var(--secondary-lilac);
+            z-index: 1000;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Links */
+        .nav-link {
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 5px;
+            transition: 0.3s;
+        }
+        .nav-link:hover { 
+            background: var(--bg-lavender); 
+            color: var(--primary-purple); 
+        }
+        .nav-link.active { 
+            background: var(--primary-purple) !important; 
+            color: white !important; 
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            background: white;
+            border-bottom: 1px solid var(--secondary-lilac);
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        /* Wallet Styling - now purple */
+        .wallet-card { 
+            background: var(--gradient-purple); 
+            color: white; 
+            border-radius: 24px; 
+            border: none; 
+            padding: 2.5rem !important; 
+        }
+
+        .btn-withdraw-trigger { 
+            background: rgba(255,255,255,0.18); 
+            border: 1px solid rgba(255,255,255,0.35); 
+            color: white; 
+            transition: 0.25s;
+        }
+        .btn-withdraw-trigger:hover { 
+            background: white; 
+            color: var(--primary-purple); 
+        }
+
+        .section-card { 
+            background: white; 
+            border-radius: 20px; 
+            border: 1px solid #e2e8f0; 
+            padding: 25px; 
+            height: 100%; 
+        }
+
+        .freelancer-item { 
+            border: 1px solid #f1f5f9; 
+            border-radius: 12px; 
+            transition: 0.2s; 
+            cursor: pointer; 
+            background: #fff; 
+        }
+        .freelancer-item:hover { 
+            border-color: var(--primary-purple); 
+            background: rgba(140,78,201,0.05); 
+        }
+
+        /* Black buttons */
+        .btn-black {
+            background-color: var(--dark-black);
+            color: white;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-black:hover {
+            background-color: #000;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        /* Custom Toast - purple accent */
+        #toast-container { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            z-index: 9999; 
+        }
+        .custom-toast {
+            min-width: 280px; 
+            padding: 16px; 
+            margin-bottom: 10px; 
+            border-radius: 16px;
+            background: white; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            border-left: 6px solid var(--primary-purple);
+        }
+
+        /* Purple spinner */
+        .spinner-purple {
+            color: var(--primary-purple) !important;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 991.98px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+            .mobile-header { display: flex; align-items: center; justify-content: space-between; }
+            .wallet-card h1 { font-size: 2.2rem !important; }
+        }
+
+        @media (max-width: 576px) {
+            .container { padding-left: 15px; padding-right: 15px; }
+            .btn-group-mobile { flex-direction: column; width: 100%; }
+            .btn-group-mobile a { width: 100%; margin-bottom: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<div class="mobile-header">
+    <button class="btn btn-light border" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+        <i class="bi bi-list fs-4"></i>
+    </button>
+    <h5 class="brand-text mb-0"></h5>
+    <div style="width: 45px;"></div>
+</div>
+
+<nav class="sidebar p-3 shadow-sm d-none d-lg-block">
+    <div class="brand mb-4 px-3 text-center">
+        <h4 class="brand-text"></h4>
+    </div>
+    <ul class="nav flex-column gap-1">
+        <li class="nav-item"><a href="client-dashboard.html" class="nav-link"><i class="bi bi-grid-fill me-2"></i> Dashboard</a></li>
+        <li class="nav-item"><a href="view-proposals.html" class="nav-link"><i class="bi bi-people-fill me-2"></i> View Proposals</a></li>
+        <li class="nav-item"><a href="wallet.html" class="nav-link active"><i class="bi bi-wallet2 me-2"></i> Wallet & Payments</a></li>
+        <li class="nav-item"><a href="bank.html" class="nav-link"><i class="bi bi-bank me-2"></i> Bank Settings</a></li>
+        <li class="nav-item mt-5"><a href="transactions.html" class="nav-link text-muted small"><i class="bi bi-clock-history me-2"></i> History</a></li>
+    </ul>
+</nav>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title brand-text"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="nav flex-column gap-1">
+            <li class="nav-item"><a href="client-dashboard.html" class="nav-link"><i class="bi bi-grid-fill me-2"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="view-proposals.html" class="nav-link"><i class="bi bi-people-fill me-2"></i> View Proposals</a></li>
+            <li class="nav-item"><a href="wallet.html" class="nav-link active"><i class="bi bi-wallet2 me-2"></i> Wallet & Payments</a></li>
+            <hr>
+            <li class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-clock-history me-2"></i> History</a></li>
+        </ul>
+    </div>
+</div>
+
+<main class="main-content p-3 p-md-4">
+    <div class="container-fluid">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+            <h3 class="fw-bold m-0">Client Wallet</h3>
+            <div class="d-flex gap-2 btn-group-mobile">
+                <a href="transactions.html" class="btn btn-outline-secondary border rounded-pill px-4 fw-bold shadow-sm btn-sm">
+                    <i class="bi bi-clock-history me-2"></i>History
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card wallet-card mb-4 shadow-sm text-center">
+                    <p class="small opacity-75 mb-1">Total Wallet Balance</p>
+                    <h1 class="fw-bold mb-4">₹<span id="displayBalance">0.00</span></h1>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-withdraw-trigger rounded-pill px-4 py-2" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                            <i class="bi bi-bank me-2"></i>Withdraw
+                        </button>
+                    </div>
+                </div>
+
+                <div class="section-card shadow-sm mb-4">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2" style="color: var(--primary-purple);"></i>Add Funds</h6>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text border-0 bg-light">₹</span>
+                        <input type="number" id="amount" class="form-control border-0 bg-light" placeholder="0.00">
+                    </div>
+                    <button onclick="initiateRazorpay()" class="btn btn-black w-100 rounded-pill py-2 fw-bold mb-4 shadow-sm">
+                        Add to Wallet
+                    </button>
+
+                    <div class="bank-status-box text-center p-3 rounded-4 bg-light border border-dashed">
+                        <p class="small text-muted mb-2 fw-bold">Bank Connection</p>
+                        <p class="extra-small text-muted mb-3" id="bankInfoSmall">Checking status...</p>
+                        <a href="bank.html" class="btn btn-dark w-100 py-2 rounded-3 small">
+                            <i class="bi bi-gear-fill me-2"></i>Manage Bank
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="section-card shadow-sm">
+                    <h5 class="fw-bold mb-4"><i class="bi bi-person-check me-2" style="color: var(--primary-purple);"></i>Pay Hired Freelancers</h5>
+                    <div id="hiredList" class="mb-4 d-flex flex-column gap-2">
+                        <!-- Filled dynamically -->
+                    </div>
+
+                    <div id="paymentArea" class="d-none border-top pt-4 mt-4 animate__animated animate__fadeIn">
+                        <div class="alert alert-secondary border-0 rounded-4 d-flex align-items-center">
+                            <i class="bi bi-info-circle-fill me-3 fs-4" style="color: var(--primary-purple);"></i>
+                            <div>
+                                <small class="d-block text-muted">Recipient</small>
+                                <b id="selectedFEmail" class="text-dark"></b>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small fw-bold mb-2">Enter Amount to Transfer (₹)</label>
+                            <input type="number" id="transferAmount" class="form-control form-control-lg border-2" placeholder="0.00">
+                        </div>
+                        <button onclick="payFromWallet()" class="btn btn-black w-100 rounded-pill py-3 fw-bold shadow-sm">
+                            Confirm & Transfer Funds
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="fw-bold">Withdraw Funds</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="withdrawUIContainer">
+                    <div class="mb-4">
+                        <label class="small fw-bold text-muted mb-2">Amount to Withdraw (₹)</label>
+<input type="number" id="withdrawAmt" class="form-control form-control-lg bg-light border-0" placeholder="0.00" oninput="updateFeePreview()">
+                    </div>
+                    <div id="feePreview" class="mb-4 p-3 bg-light rounded-3 small text-muted" style="display: none;">
+    <div class="d-flex justify-content-between mb-2">
+        <span>Platform Fee (10%):</span>
+        <span class="text-danger fw-bold">-₹<span id="feeAmt">0.00</span></span>
+    </div>
+    <div class="d-flex justify-content-between fw-bold text-dark border-top pt-2 mt-1">
+        <span>You will receive (after fee):</span>
+        <span>₹<span id="netAmt">0.00</span></span>
+    </div>
+    <small class="d-block mt-2 text-center text-muted">
+        (10% platform service fee for secure processing)
+    </small>
+</div>
+                    <p class="small fw-bold text-muted mb-2">Transfer Destination</p>
+                    <div id="modalBankPreview" class="p-3 border rounded-4 bg-light mb-4">
+                        <div class="text-center py-2"><div class="spinner-border spinner-purple spinner-border-sm"></div></div>
+                    </div>
+                    <button class="btn btn-black w-100 rounded-pill py-3 fw-bold shadow" id="confirmWithdrawBtn" onclick="processWithdrawal()" disabled>
+                        Withdraw Funds
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const email = localStorage.getItem('userEmail');
+    const API_BASE = "https://hirbee-1.onrender.com/api";
+    let selectedFreelancer = null;
+
+    function showNotify(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `custom-toast toast-${type}`;
+        const icon = type === 'success' ? 'bi-check-circle-fill text-success' : 'bi-exclamation-triangle-fill text-danger';
+        toast.innerHTML = `<i class="bi ${icon} fs-5"></i><div><div class="fw-bold small text-dark">${type === 'success' ? 'Success' : 'Error'}</div><div class="text-muted small">${message}</div></div>`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.transition = '0.4s'; toast.style.transform = 'translateX(120%)'; setTimeout(() => toast.remove(), 400); }, 3000);
+    }
+
+    async function init() {
+        if (!email) { window.location.href = "login.html"; return; }
+        fetchBalance(); loadHiredFreelancers(); checkBankStatus();
+    }
+
+    async function fetchBalance() {
+        try {
+            const res = await fetch(`${API_BASE}/wallet/balance?email=${email}`);
+            const data = await res.json();
+            document.getElementById('displayBalance').innerText = data.balance.toLocaleString('en-IN', {minimumFractionDigits: 2});
+        } catch(e) { console.error(e); }
+    }
+
+    async function loadHiredFreelancers() {
+        try {
+            const res = await fetch(`${API_BASE}/proposals/client-list?email=${email}`);
+            const proposals = await res.json();
+            const hired = proposals.filter(p => p.status === 'ACCEPTED');
+            const listDiv = document.getElementById('hiredList');
+            if(hired.length === 0) { 
+                listDiv.innerHTML = `<p class="text-muted text-center py-4 small bg-light rounded-4">No active hires found.</p>`; 
+                return; 
+            }
+            listDiv.innerHTML = hired.map(p => `
+                <div class="p-3 freelancer-item d-flex justify-content-between align-items-center shadow-sm" onclick="selectF('${p.freelancerEmail}')">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-purple bg-opacity-10 p-2 rounded-circle me-3" style="background:rgba(140,78,201,0.1);">
+                            <i class="bi bi-person" style="color:var(--primary-purple);"></i>
+                        </div>
+                        <div>
+                            <div class="small fw-bold text-dark">${p.freelancerEmail}</div>
+                            <div class="extra-small text-muted">Hired Talent</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-right text-muted"></i>
+                </div>`).join('');
+        } catch(e) { console.error(e); }
+    }
+
+    function selectF(fEmail) {
+        selectedFreelancer = fEmail;
+        document.getElementById('selectedFEmail').innerText = fEmail;
+        document.getElementById('paymentArea').classList.remove('d-none');
+        document.getElementById('paymentArea').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function checkBankStatus() {
+        const modalPreview = document.getElementById('modalBankPreview');
+        const bankInfoSmall = document.getElementById('bankInfoSmall');
+        const confirmBtn = document.getElementById('confirmWithdrawBtn');
+        try {
+            const res = await fetch(`${API_BASE}/bank/my-details?email=${encodeURIComponent(email)}`);
+            if(res.ok) {
+                const data = await res.json();
+                const accMasked = data.accountNumber ? `****${data.accountNumber.slice(-4)}` : "UPI Linked";
+                bankInfoSmall.innerText = `Connected: ${accMasked}`;
+                modalPreview.innerHTML = `<div class="d-flex align-items-center"><i class="bi bi-bank fs-4 me-3" style="color:var(--primary-purple);"></i><div><p class="mb-0 fw-bold small">${data.accountHolderName}</p><p class="mb-0 text-muted extra-small">${accMasked}</p></div></div>`;
+                confirmBtn.disabled = false;
+            } else {
+                bankInfoSmall.innerHTML = `<span class="text-danger small">No bank account linked</span>`;
+                modalPreview.innerHTML = `<div class="text-center py-2"><p class="text-danger small fw-bold mb-2">No bank account found!</p><a href="bank.html" class="btn btn-black btn-sm rounded-pill px-3">Add Bank</a></div>`;
+                confirmBtn.disabled = true;
+            }
+        } catch(e) { modalPreview.innerText = "Error loading bank info"; }
+    }
+
+    async function processWithdrawal() {
+        const amt = document.getElementById('withdrawAmt').value;
+        const currentBal = parseFloat(document.getElementById('displayBalance').innerText.replace(/,/g, ''));
+        if(!amt || amt <= 0) return showNotify("Enter valid amount", "error");
+        if(amt > currentBal) return showNotify("Insufficient balance", "error");
+        
+        try {
+            const res = await fetch(`${API_BASE}/wallet/withdraw`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email: email, amount: amt })
+            });
+            if(res.ok) { 
+                showNotify("Withdrawal successful!", "success"); 
+                setTimeout(() => location.reload(), 2000); 
+            }
+            else { showNotify("Failed: " + await res.text(), "error"); }
+        } catch(e) { showNotify("Server Error", "error"); }
+    }
+
+    function initiateRazorpay() {
+        const amt = document.getElementById('amount').value;
+        if(!amt || amt <= 0) return showNotify("Enter amount", "error");
+
+        const options = {
+            "key": "rzp_test_Rz1yk3tgGSCQya", 
+            "amount": amt * 100,
+            "name": "Local-Lance Wallet",
+            "handler": async function() {
+                try {
+                    await fetch(`${API_BASE}/wallet/add-money`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ email: email, amount: amt })
+                    });
+                    showNotify("Funds added successfully!", "success");
+                    setTimeout(() => location.reload(), 1500);
+                } catch(e) { showNotify("Payment failed to sync", "error"); }
+            },
+            "theme": { "color": "#8C4EC9" }
+        };
+        new Razorpay(options).open();
+    }
+    function updateFeePreview() {
+    const amtInput = document.getElementById('withdrawAmt');
+    const previewDiv = document.getElementById('feePreview');
+    const feeSpan = document.getElementById('feeAmt');
+    const netSpan = document.getElementById('netAmt');
+
+    const amt = parseFloat(amtInput.value) || 0;
+
+    if (amt > 0) {
+        const fee = (amt * 0.10).toFixed(2);   // ← 10% fee
+        const net = (amt - fee).toFixed(2);
+
+        feeSpan.innerText = fee;
+        netSpan.innerText = net;
+        previewDiv.style.display = 'block';
+    } else {
+        previewDiv.style.display = 'none';
+    }
+}
+
+    async function payFromWallet() {
+        const amt = document.getElementById('transferAmount').value;
+        if(!amt || amt <= 0) return showNotify("Enter valid amount", "error");
+        
+        try {
+            const res = await fetch(`${API_BASE}/wallet/transfer`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ senderEmail: email, receiverEmail: selectedFreelancer, amount: amt })
+            });
+            if(res.ok) { 
+                showNotify("Payment Sent Successfully!", "success"); 
+                setTimeout(() => location.reload(), 2000); 
+            }
+            else { showNotify(await res.text(), "error"); }
+        } catch(e) { showNotify("Payment failed", "error"); }
+    }
+
+    init();
+</script>
+</body>
+</html>

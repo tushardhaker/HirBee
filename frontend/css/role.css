@@ -1,0 +1,113 @@
+/* ================================================================
+   ROYAL PURPLE & LAVENDER MIST THEME - ROLE SELECTION
+   ================================================================ */
+
+:root {
+    --bg-lavender: #F6EEFF;
+    --primary-purple: #8C4EC9;
+    --secondary-lilac: #DFC6F9;
+    --accent-orchid: #B979F7;
+    --dark-purple: #2D1B41;
+    --glass: rgba(255, 255, 255, 0.9);
+}
+
+body {
+    background: var(--bg-lavender);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--dark-purple);
+}
+
+#loading {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: var(--primary-purple);
+}
+
+.role-container {
+    width: 100%;
+    max-width: 550px;
+    padding: 20px;
+}
+
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid var(--secondary-lilac);
+    padding: 3rem;
+    border-radius: 30px;
+    box-shadow: 0 25px 50px -12px rgba(140, 78, 201, 0.15);
+}
+
+.brand-logo {
+    font-size: 2.5rem;
+    color: var(--primary-purple);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-purple), var(--accent-orchid));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.role-selection-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.role-option {
+    background: #ffffff;
+    border: 2px solid var(--secondary-lilac);
+    padding: 25px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.role-option:hover {
+    border-color: var(--primary-purple);
+    background: var(--bg-lavender);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(140, 78, 201, 0.1);
+}
+
+.icon-box {
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.role-option:hover .icon-box {
+    transform: scale(1.1);
+}
+
+.freelancer-icon { color: var(--primary-purple); }
+.client-icon { color: var(--accent-orchid); }
+
+.brand-link {
+    color: var(--primary-purple);
+    font-weight: 700;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-purple);
+    border-color: var(--primary-purple);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .role-selection-grid {
+        grid-template-columns: 1fr;
+    }
+    .glass-card {
+        padding: 2rem 1.5rem;
+    }
+}

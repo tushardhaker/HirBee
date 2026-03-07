@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #F8F9FE;
+            --primary: #8C4EC9;        /* Royal Purple */
+            --secondary: #DFC6F9;      /* Soft Lilac */
+            --accent: #B979F7;         /* Orchid Glow */
+            --text-main: #2D1B41;      /* Dark Purple Text */
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .fw-800 { font-weight: 800; }
+
+        /* Navigation */
+        .nav-top {
+            padding: 15px 0;
+            background: var(--white);
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .btn-back {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { transform: translateX(-5px); }
+
+        /* Help Hero */
+        .help-hero {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 80px 0;
+            color: white;
+            text-align: center;
+            border-radius: 0 0 50px 50px;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 30px auto 0;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 25px 18px 55px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        /* Category Cards */
+        .category-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            cursor: pointer;
+            height: 100%;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(140, 78, 201, 0.1);
+        }
+
+        .cat-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-color);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            font-size: 1.8rem;
+            margin: 0 auto 20px;
+        }
+
+        /* Accordion Styling */
+        .accordion-item {
+            border: none;
+            margin-bottom: 15px;
+            border-radius: 15px !important;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .accordion-button {
+            font-weight: 600;
+            padding: 20px;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: var(--secondary);
+            color: var(--primary);
+        }
+
+        .contact-cta {
+            background: var(--text-main);
+            color: white;
+            padding: 40px;
+            border-radius: 30px;
+            margin-top: 60px;
+        }
+
+        .btn-contact {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-contact:hover {
+            background: white;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-top">
+        <div class="container">
+            <a href="javascript:void(0)" onclick="goToDashboard()" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <header class="help-hero">
+        <div class="container">
+            <h1 class="display-5 fw-800">Hello, how can we help?</h1>
+            <p class="opacity-75">Search our knowledge base or browse categories below</p>
+            <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for articles (e.g. 'payments', 'blue tick')...">
+            </div>
+        </div>
+    </header>
+
+    <section class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="category-card">
+                    <div class="cat-icon"><i class="bi bi-person-badge"></i></div>
+                    <h6 class="fw-bold">Account</h6>
+                    <p class="small text-muted mb-0">Profile settings and verification</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="category-card">
+                    <div class="cat-icon"><i class="bi bi-shield-lock"></i></div>
+                    <h6 class="fw-bold">Security</h6>
+                    <p class="small text-muted mb-0">Password & vault protection</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="category-card">
+                    <div class="cat-icon"><i class="bi bi-credit-card"></i></div>
+                    <h6 class="fw-bold">Payments</h6>
+                    <p class="small text-muted mb-0">Withdrawals and subscriptions</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="category-card">
+                    <div class="cat-icon"><i class="bi bi-stars"></i></div>
+                    <h6 class="fw-bold">Trending</h6>
+                    <p class="small text-muted mb-0">How ranking & trending works</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h3 class="fw-800 mb-4 text-center">Frequently Asked Questions</h3>
+                
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How do I get the "Trending" badge?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                To appear in the Trending section, you must have an active Premium or Business subscription. Our algorithm ranks users based on profile completeness and subscription tier.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                When will I receive my withdrawal?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Withdrawals are processed within 24-48 hours. Once processed, it may take 3-5 business days to reflect in your bank account depending on your provider.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Is my data safe in the Vault?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Yes. We use industry-standard AES-256 encryption. Only authorized users with verified sessions can access sensitive vault data.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                How can I change my role from Client to Freelancer?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Currently, roles are fixed at registration. If you need to switch roles, please contact support or create a secondary account with a different email.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-cta text-center">
+            <h2 class="fw-800">Still have questions?</h2>
+            <p class="opacity-75 mb-4">If you cannot find the answer in our knowledge base, you can contact our 24/7 support team.</p>
+            <a href="contact.html" class="btn btn-contact">
+                Contact Support <i class="bi bi-headset ms-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-5 text-center">
+        <p class="small text-muted">© 2026 HirBee Help Center. Empowering your journey.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /**
+         * Dynamic Dashboard Redirect
+         */
+        function goToDashboard() {
+            const userRole = localStorage.getItem('userRole'); 
+            if (userRole === 'FREELANCER') {
+                window.location.href = 'freelancer-dashboard.html';
+            } else if (userRole === 'CLIENT') {
+                window.location.href = 'client-dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Simple Search Filtering Logic
+        document.querySelector('.search-input').addEventListener('keyup', function(e) {
+            let term = e.target.value.toLowerCase();
+            let items = document.querySelectorAll('.accordion-item');
+            
+            items.forEach(item => {
+                let text = item.innerText.toLowerCase();
+                if(text.includes(term)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

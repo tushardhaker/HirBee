@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | HirBee</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/signup.css"> 
+</head>
+<body>
+
+    <div id="successOverlay" class="success-overlay" style="display: none;">
+        <div class="success-content text-center">
+            <div class="success-icon-box mb-4 animate-pop">
+                <i class="bi bi-shield-check-fill" style="font-size: 5rem; color: #4CAF50;"></i>
+            </div>
+            <h2 class="fw-bold text-white mb-2">Authenticated Successfully!</h2>
+            <p id="loadingText" class="text-white-50">Preparing your personalized workspace...</p>
+            
+            <div class="loading-bar-container mx-auto mt-4">
+                <div class="loading-bar-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="signup-container">
+        <div class="glass-card">
+            
+            <div class="text-center mb-4">
+                <div class="brand-logo mb-2">
+                    <i class=""></i>
+                </div>
+                <h2 class="fw-bold"><span class="text-gradient">Welcome Back</span></h2>
+                <p class="text-secondary small">Login to access your profile</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="custom-label">Email Address</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-envelope"></i>
+                        <input type="email" id="loginEmail" class="custom-input" placeholder="name@company.com" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="custom-label">Password</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-shield-lock"></i>
+                        <input type="password" id="loginPassword" class="custom-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="text-end mb-4">
+                    <a href="javascript:void(0)" class="brand-link small text-decoration-none" onclick="openForgotModal()">Forgot Password?</a>
+                </div>
+
+                <div id="authMessage" class="text-center mb-3 d-none" style="padding: 12px; border-radius: 12px; font-size: 0.9rem; font-weight: 600;">
+                </div>
+
+                <button type="submit" id="loginBtn" class="register-submit-btn">Continue to Dashboard</button>
+            </form>
+
+            <div class="auth-divider"><span>OR CONTINUE WITH</span></div>
+
+            <div class="social-grid">
+                <button type="button" class="social-action" onclick="loginWithGoogle()">
+                    <i class="bi bi-google"></i> Google
+                </button>
+                <!-- <button type="button" class="social-action" onclick="loginWithGitHub()">
+                    <i class="bi bi-github"></i> GitHub
+                </button> -->
+            </div>
+
+            <div class="footer-links-container">
+                <p class="mb-1">New here? <a href="signup.html" class="brand-link">Create account</a></p>
+                <a href="index.html" class="home-link"><i class="bi bi-house-door-fill me-1"></i> Back to Home Page</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="forgotModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px; background: #F6EEFF;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-dark">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modalMessage" class="small mb-3 text-center d-none" style="padding: 10px; border-radius: 10px; font-weight: 600;"></div>
+
+                    <div id="forgotStep1">
+                        <label class="custom-label">Enter Registered Email</label>
+                        <div class="input-group-custom mb-3">
+                            <i class="bi bi-envelope"></i>
+                            <input type="email" id="resetEmail" class="custom-input" placeholder="email@example.com">
+                        </div>
+                        <button id="sendResetBtn" class="register-submit-btn m-0" onclick="sendResetOTP()">Verify Identity</button>
+                    </div>
+
+                    <div id="forgotStep2" style="display: none;">
+                        <label class="custom-label">Security Verification</label>
+                        <div class="input-group-custom mb-2">
+                            <i class="bi bi-patch-check"></i>
+                            <input type="text" id="resetOTP" class="custom-input" placeholder="6-digit OTP">
+                        </div>
+                        <div class="input-group-custom mb-3">
+                            <i class="bi bi-lock"></i>
+                            <input type="password" id="newPassword" class="custom-input" placeholder="New Secure Password">
+                        </div>
+                        <button id="updatePassBtn" class="register-submit-btn m-0" onclick="verifyAndReset()">Update Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pop { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+
+        .success-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(45, 27, 65, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animate-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        .loading-bar-container {
+            width: 250px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .loading-bar-progress {
+            height: 100%;
+            background: #4CAF50;
+            width: 0;
+            animation: loadProgress 2.5s ease-in-out forwards;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/script/login.js"></script>
+</body>
+</html>

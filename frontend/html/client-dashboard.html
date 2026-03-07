@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Intro.js for Help Tour -->
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+    
+    <style>
+    :root {
+        --bg-lavender: #F6EEFF;
+        --primary-purple: #8C4EC9;
+        --secondary-lilac: #DFC6F9;
+        --accent-orchid: #B979F7;
+        --text-dark: #2D1B41;
+        --text-gradient: linear-gradient(135deg, #8C4EC9 0%, #B979F7 100%);
+        --purple-dark: #6f3fa8;
+        --success: #10b981; /* Green for success, but we'll override where needed */
+    }
+
+    body { 
+        background-color: var(--bg-lavender); 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        padding-top: 80px; 
+        color: var(--text-dark);
+    }
+
+    .dashboard-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(140, 78, 201, 0.15);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1030;
+        height: 80px;
+    }
+
+    .text-gradient {
+        background: var(--text-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .brand-logo {
+        font-weight: 800;
+        font-size: 1.5rem;
+        letter-spacing: -0.5px;
+    }
+
+    .header-nav-link {
+        color: var(--text-dark);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+
+    .header-nav-link:hover {
+        color: var(--primary-purple);
+    }
+
+    .sidebar { 
+        min-width: 280px; 
+        height: calc(100vh - 80px); 
+        position: sticky; 
+        top: 80px; 
+        background: white; 
+        border-right: 1px solid var(--secondary-lilac); 
+        overflow-y: auto;
+    }
+
+    .nav-link {
+        font-weight: 600;
+        padding: 12px 20px !important;
+        margin-bottom: 5px;
+        border-radius: 12px;
+        color: var(--text-dark) !important;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+        background: var(--bg-lavender);
+        color: var(--primary-purple) !important;
+        transform: translateX(5px);
+    }
+
+    .nav-link.active { 
+        background: var(--primary-purple) !important; 
+        color: white !important; 
+        box-shadow: 0 4px 15px rgba(140, 78, 201, 0.3);
+    }
+
+    .nav-link.premium-link {
+        background: linear-gradient(135deg, #f5e9ff 0%, #e9d5ff 100%);
+        border: 1px solid var(--secondary-lilac);
+        color: var(--primary-purple) !important;
+    }
+    .nav-link.premium-link:hover {
+        background: var(--accent-orchid);
+        color: white !important;
+        transform: scale(1.02);
+    }
+
+    .premium-member-link {
+        background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+        border: 1px solid var(--secondary-lilac);
+        color: var(--primary-purple) !important;
+        font-weight: 600;
+    }
+    .premium-member-link:hover {
+        background: var(--accent-orchid);
+        color: white !important;
+        transform: scale(1.02);
+    }
+
+    .wallet-box { 
+        background: linear-gradient(135deg, #fdfbff 0%, #f6eeff 100%);
+        border: 1px solid var(--secondary-lilac); 
+        border-radius: 15px;
+        cursor: pointer; 
+        transition: all 0.3s ease;
+    }
+    .wallet-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(140, 78, 201, 0.15);
+    }
+
+    /* Force all Bootstrap primary colors to purple (no blue ever) */
+    .btn-brand-primary,
+    .btn-primary,
+    .btn-outline-primary,
+    .bg-primary,
+    .text-primary,
+    .border-primary,
+    .border-start-primary,
+    .badge.bg-primary {
+        background: var(--text-gradient) !important;
+        border-color: var(--primary-purple) !important;
+        color: white !important;
+    }
+
+    .btn-brand-primary:hover,
+    .btn-primary:hover,
+    .btn-outline-primary:hover {
+        opacity: 0.92;
+        transform: translateY(-2px);
+        color: white !important;
+    }
+
+    /* Override any remaining Bootstrap blue-ish classes */
+    .text-info,
+    .bg-info,
+    .border-info,
+    .border-start-info,
+    .border-start-success {
+        color: var(--primary-purple) !important;
+        background-color: var(--secondary-lilac) !important;
+        border-color: var(--primary-purple) !important;
+    }
+
+    .bi-geo-alt-fill,
+    .bi-plus-circle-fill,
+    .bi-bell-fill,
+    .bi-check-circle-fill {
+        color: var(--primary-purple) !important;
+    }
+
+    .pricing-card {
+        border: 2px solid #f0f0f0;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    .pricing-card:hover {
+        border-color: var(--primary-purple);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(140, 78, 201, 0.1);
+    }
+    .pricing-card.popular {
+        border-color: var(--primary-purple);
+        background: #faf5ff;
+        position: relative;
+    }
+    .popular-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-purple);
+        color: white;
+        padding: 4px 15px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: bold;
+    }
+
+    .verified-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--primary-purple);
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(140, 78, 201, 0.4);
+        border: 2px solid white;
+        animation: pulse-purple 2s infinite;
+    }
+
+    @keyframes pulse-purple {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .subscription-success {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        z-index: 9999;
+        font-weight: 600;
+    }
+
+    .subscription-success.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .subscription-success i {
+        animation: bounce 1s infinite;
+        margin-right: 8px;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+
+    #profileSuccessOverlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .profile-pic-container {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .profile-upload-wrapper {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 20px;
+    }
+
+    .preview-img {
+        width: 100px; height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .cam-btn {
+        position: absolute; bottom: 0; right: 0;
+        background: var(--primary-purple);
+        color: white; width: 32px; height: 32px;
+        border-radius: 50%; display: flex;
+        align-items: center; justify-content: center;
+        border: 2px solid white; cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .dashboard-footer {
+        background: white;
+        border-top: 1px solid var(--secondary-lilac);
+        padding: 25px 0;
+        margin-top: 50px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    /* Intro.js – fully purple theme */
+    .introjs-tooltip {
+        border-radius: 16px;
+        padding: 20px 24px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        box-shadow: 0 10px 35px rgba(140, 78, 201, 0.35);
+        max-width: 380px;
+        background: white;
+        color: var(--text-dark);
+    }
+    .introjs-nextbutton,
+    .introjs-donebutton {
+        background: var(--text-gradient) !important;
+        border: none !important;
+        border-radius: 50px !important;
+        color: white !important;
+        padding: 10px 24px !important;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(140, 78, 201, 0.3);
+    }
+    .introjs-prevbutton {
+        border-radius: 50px !important;
+        padding: 10px 20px !important;
+        background: #f0f0f0 !important;
+        color: var(--text-dark) !important;
+    }
+    .introjs-skipbutton {
+        color: #777 !important;
+        font-weight: 500;
+    }
+    .introjs-bullets ul li a.active {
+        background: var(--primary-purple) !important;
+    }
+    .introjs-helperLayer {
+        box-shadow: inset 0 0 1px var(--primary-purple), 0 0 0 9999px rgba(0,0,0,0.55) !important;
+    }
+
+    @media (max-width: 992px) {
+        .sidebar { display: none; }
+        .header-links { display: none !important; }
+        .subscription-success { right: 10px; top: 90px; }
+    }
+
+    @media (max-width: 576px) {
+        .introjs-tooltiptext {
+            white-space: pre-line !important;
+            line-height: 1.6 !important;
+            font-size: 15px !important;
+            padding: 0 8px !important;
+        }
+        .introjs-mobile-3line {
+            max-width: 340px !important;
+        }
+    }
+
+    /* ────────────────────────────────────────────────
+   CLIENT DASHBOARD INTRO.JS STYLING (same feeling as freelancer)
+───────────────────────────────────────────────── */
+
+.introjs-tooltip {
+    border-radius: 16px;
+    padding: 16px 20px;
+    max-width: 88vw !important;
+    min-width: 240px;
+    font-size: 15px;
+    line-height: 1.55;
+    box-shadow: 0 10px 35px rgba(140, 78, 201, 0.35);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.introjs-tooltiptext {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+
+
+.introjs-prevbutton {
+    border-radius: 50px !important;
+    background: #f1eaff !important;
+    color: var(--primary-purple) !important;
+}
+
+.introjs-skipbutton {
+    color: #777 !important;
+    font-weight: 500;
+}
+
+.introjs-bullets ul li a.active {
+    background: var(--primary-purple) !important;
+}
+
+/* Hide blue progress bar completely */
+.introjs-progress {
+    display: none !important;
+}
+
+/* Remove default blue highlight/helper layer */
+.introjs-helperLayer {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.introjs-showElement {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+
+
+/* Ensure offcanvas stays on top during tour */
+body.introjs-showElement .offcanvas {
+    z-index: 99999 !important;
+}
+</style>
+</head>
+<body>
+
+    <!-- Subscription Success Toast -->
+    <div id="subscriptionSuccess" class="subscription-success d-none">
+        <i class="bi bi-check-circle-fill"></i>
+        Subscription Active! Purple tick added to your profile ✨
+    </div>
+
+    <div id="profileSuccessOverlay">
+        <div class="text-center">
+            <div class="display-1 text-success mb-3"><i class="bi bi-check-circle-fill"></i></div>
+            <h2 class="fw-bold">Profile Updated!</h2>
+            <p class="text-muted">Refreshing your dashboard...</p>
+        </div>
+    </div>
+
+    <header class="dashboard-header d-flex align-items-center px-4">
+        <div class="container-fluid d-flex align-items-center">
+            <button class="btn btn-light d-lg-none me-3 border" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                <i class="bi bi-list"></i>
+            </button>
+
+                  <a class="navbar-brand fw-bolder fs-3 text-brand-primary d-flex align-items-center" href="index.html">
+    <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" class="me-2" style="height: 90px; width: auto;">
+    
+</a>
+
+            <div class="header-links d-flex gap-4 me-auto">
+                <a href="index.html" class="header-nav-link">Home</a>
+                <a href="my_jobs.html" class="header-nav-link">Jobs</a>
+                <a href="about.html" class="header-nav-link">About</a>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Bell button for notifications -->
+                <button class="btn btn-light rounded-circle position-relative border shadow-sm" 
+        data-bs-toggle="modal" 
+        data-bs-target="#clientNotifModal"
+        style="width: 45px; height: 45px;">
+    <i class="bi bi-bell-fill"></i>
+    <span id="headerNotifBadge" 
+      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
+      style="font-size: 0.6rem;">
+</span>
+
+</button>
+
+                <div class="d-flex align-items-center bg-light rounded-pill p-1 pe-3 border position-relative" style="cursor: pointer;" onclick="showSection('profile')">
+                    <div id="navProfileIcon" class="text-white d-flex align-items-center justify-content-center rounded-circle shadow-sm position-relative" style="width: 38px; height: 38px; overflow: hidden; background: var(--primary-purple);">
+                        <i class="bi bi-person-fill"></i>
+                        <div id="headerVerifiedBadge" class="verified-badge d-none">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </div>
+                    </div>
+                    <div class="ms-2 d-none d-sm-block">
+                        <div class="fw-bold text-dark lh-1" id="headerClientName" style="font-size: 0.85rem;">Client Name</div>
+                        <small id="userPlanBadge" style="font-size: 0.7rem;">Free Plan</small>
+                    </div>
+                </div>
+
+                <a href="create_job.html" class="btn btn-brand-primary rounded-pill px-4 py-2 fw-bold d-none d-md-block">
+                    <i class="bi bi-plus-lg me-1"></i> Post Job
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-flex">
+        <nav class="sidebar p-3 shadow-sm d-none d-lg-flex flex-column">
+            <div class="profile-section text-center mb-4 p-3 bg-light rounded-4 border position-relative">
+                <div id="sidebarVerifiedBadge" class="verified-badge d-none">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
+                <div id="sidebarAvatar" class="mb-2 mx-auto text-white d-flex align-items-center justify-content-center rounded-circle shadow-sm position-relative" style="width: 70px; height: 70px; font-size: 2rem; border: 4px solid white; overflow: hidden; background: var(--primary-purple);">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <h6 class="fw-bold mb-0 mt-2" id="clientName">Loading...</h6> 
+                <p class="text-muted small mb-3" id="displayLocation"><i class="bi bi-geo-alt-fill"></i> No Location</p>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-sm btn-white border rounded-pill fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#updateProfileModal">
+                        <i class="bi bi-pencil-square me-1"></i> Edit Profile
+                    </button>
+                    <div class="wallet-box p-3 text-start mt-2 shadow-sm" onclick="window.location.href='wallet.html'">
+                        <small class="text-muted d-block fw-bold" style="font-size: 0.65rem; letter-spacing: 1px;">MY BALANCE</small>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fs-5 fw-bold text-dark">₹<span id="walletBalance">0.00</span></span>
+                            <i class="bi bi-plus-circle-fill fs-5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-house-door-fill me-3"></i> Home</a></li>
+                <li class="nav-item"><a href="#" id="nav-dash" class="nav-link active" onclick="showSection('dashboard')"><i class="bi bi-grid-1x2-fill me-3"></i> Dashboard</a></li>
+                
+                <li class="nav-item mt-1" id="subscriptionNavItem">
+                    <!-- Dynamically replaced by JS -->
+                </li>
+
+                <li class="nav-item"><a href="#" id="nav-prof" class="nav-link" onclick="showSection('profile')"><i class="bi bi-person-circle me-3"></i> My Profile</a></li>
+                <li class="nav-item"><a href="view-proposals.html" id="nav-prop" class="nav-link"><i class="bi bi-people-fill me-3"></i> Proposals</a></li>
+                <li class="nav-item"><a href="message.html" class="nav-link"><i class="bi bi-chat-dots-fill me-3"></i> Messages</a></li>
+                <li class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2 me-3"></i> Wallet</a></li>
+                <li class="nav-item"><a href="bank.html" class="nav-link"><i class="bi bi-bank me-3"></i> Add Bank</a></li>
+                <li class="nav-item mt-4 border-top pt-3">
+                    <a href="#" class="nav-link text-danger fw-bold" onclick="logout()">
+                        <i class="bi bi-box-arrow-right me-3"></i> Logout
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Help Tour Button -->
+            <div class="mt-4 px-2">
+                <button class="btn btn-light btn-sm w-100 rounded-pill text-muted border" onclick="startDashboardTour(true)">
+                    <i class="bi bi-question-circle me-1"></i> Help Centre
+                </button>
+            </div>
+        </nav>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" style="width: 280px;">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title fw-bold text-gradient">HirBee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <div class="p-3 border-bottom bg-light text-center position-relative">
+                    <div id="mobileVerifiedBadge" class="verified-badge d-none">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <div id="mobileAvatar" class="text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center shadow-sm position-relative" style="width: 60px; height: 60px; overflow: hidden; background: var(--primary-purple);">
+                        <i class="bi bi-person-fill fs-3"></i>
+                    </div>
+                    <div class="fw-bold" id="mobileClientName">User</div>
+                </div>
+                <div class="nav flex-column p-3">
+                    <a href="index.html" class="nav-link"><i class="bi bi-house-door-fill me-3"></i> Home</a>
+                    <a href="#" class="nav-link" onclick="showSection('dashboard')" data-bs-dismiss="offcanvas"><i class="bi bi-grid-1x2-fill me-3"></i> Dashboard</a>
+                   <a href="#" class="nav-link premium-link shadow-sm" 
+   onclick="window.location.href='create_job.html'; return false;" 
+   data-bs-dismiss="offcanvas">
+    <i class="bi bi-plus-lg me-3"></i> Post Job
+</a>
+                    <div id="mobileSubscriptionItem">
+                        <!-- Dynamically replaced -->
+                    </div>
+                    <a href="#" class="nav-link" onclick="showSection('profile')" data-bs-dismiss="offcanvas"><i class="bi bi-person-circle me-3"></i> My Profile</a>
+                    <a href="view-proposals.html" class="nav-link"><i class="bi bi-people-fill me-3"></i> Proposals</a>
+                    <a href="message.html" class="nav-link"><i class="bi bi-chat-dots-fill me-3"></i> Messages</a>
+                    <a href="wallet.html" class="nav-link"><i class="bi bi-wallet2 me-3"></i> Wallet</a>
+                    <a href="bank.html" class="nav-link"><i class="bi bi-bank me-3"></i> Add Bank</a>
+                    <hr>
+                    <a href="#" class="nav-link text-danger" onclick="logout()"><i class="bi bi-box-arrow-right me-3"></i> Logout</a>
+                </div>
+
+                <!-- Help Tour in mobile sidebar -->
+                <div class="p-3">
+                    <button class="btn btn-light btn-sm w-100 rounded-pill text-muted border" onclick="startDashboardTour(true)">
+                        <i class="bi bi-question-circle me-1"></i> Help Centre
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <main class="flex-grow-1 p-3 p-md-4">
+            <div class="container-fluid">
+                <header class="row align-items-center mb-4" id="welcomeHeader">
+                    <div class="col-md-7">
+                        <h2 class="fw-extrabold mb-1">Welcome back, <span class="text-gradient" id="welcomeName">User</span>!</h2>
+                        <p class="text-muted">Here is what's happening with your local projects today.</p>
+                    </div>
+                    <div class="col-md-5 text-md-end">
+                        <button class="btn btn-brand-primary rounded-pill px-4 py-2 me-2" onclick="fetchNearbyFreelancers()">
+                            <i class="bi bi-geo-alt me-1"></i> Nearby Talent
+                        </button>
+                    </div>
+                </header>
+
+                <div class="row g-4 mb-5" id="statsRow">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm p-4 rounded-4 border-start border-5" style="border-left-color: var(--primary-purple) !important;">
+                            <div class="d-flex align-items-center">
+                                <div class="p-3 bg-lavender rounded-3 me-3"><i class="bi bi-layers fs-4" style="color: var(--primary-purple);"></i></div>
+                                <div>
+                                    <h6 class="text-muted small fw-bold mb-0">Active Postings</h6>
+                                    <h3 class="fw-bold mb-0" id="activeJobsCount">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm p-4 rounded-4 border-start border-5" style="border-left-color: var(--primary-purple) !important;">
+                            <div class="d-flex align-items-center">
+                                <div class="p-3 rounded-3 me-3" style="background: #f5e9ff;"><i class="bi bi-file-earmark-text fs-4" style="color: var(--primary-purple);"></i></div>
+                                <div>
+                                    <h6 class="text-muted small fw-bold mb-0">Total Proposals</h6>
+                                    <h3 class="fw-bold mb-0" id="totalProposalsCount">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm p-4 rounded-4 border-start border-5" style="border-left-color: var(--primary-purple) !important; cursor: pointer;" onclick="fetchNearbyFreelancers()">
+                            <div class="d-flex align-items-center">
+                                <div class="p-3 rounded-3 me-3" style="background: #f3e8ff;"><i class="bi bi-people fs-4" style="color: var(--primary-purple);"></i></div>
+                                <div>
+                                    <h6 class="text-muted small fw-bold mb-0">Local Experts</h6>
+                                    <h3 class="fw-bold mb-0" id="nearbyCount">Check</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0" id="sectionTitle">Your Recent Postings</h5>
+                </div>
+
+                <div class="row g-3" id="dynamicContainer"></div>
+
+               <footer class="footer-custom pt-5 pb-5 bg-white border-top">
+    <div class="container">
+        <div class="row text-center text-md-start gy-5">
+            <div class="col-lg-4 col-12 mb-4 mb-lg-0">
+                <a class="navbar-brand fw-bolder fs-4 d-inline-block mb-3" href="index.html">
+                    <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" style="height: 60px; width: auto;">
+                </a>
+                <p class="text-muted small" style="max-width: 360px;">
+                    Secure marketplace for freelancers & businesses. 
+                    Post jobs, manage projects, safe payments.
+                </p>
+            </div>
+
+            <div class="col-6 col-md-3 col-lg-2">
+                <h6 class="fw-bold mb-3">Platform</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="total_jobs.html" class="text-muted text-decoration-none">Browse Jobs</a></li>
+                    <li class="mb-2"><a href="freelancers.html" class="text-muted text-decoration-none">Find Talent</a></li>
+                    <li><a href="escrow.html" class="text-muted text-decoration-none">Escrow</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-3 col-lg-2">
+                <h6 class="fw-bold mb-3">Company</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="about.html" class="text-muted text-decoration-none">About Us</a></li>
+                    <li class="mb-2"><a href="https://www.linkedin.com/in/hirbee-5930793ab" class="text-muted text-decoration-none hover-purple">Careers <span class="badge bg-primary-subtle text-primary rounded-pill small" style="font-size: 0.7rem;"></span></a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-muted text-decoration-none">Contact</a></li>
+                    <li><a href="terms.html" class="text-muted text-decoration-none">Terms</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-3 col-lg-2">
+                <h6 class="fw-bold mb-3">Resources</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="help.html" class="text-muted text-decoration-none">Help Center</a></li>
+                    <li class="mb-2"><a href="dispute-policy.html" class="text-muted text-decoration-none hover-purple">Dispute Policy</a></li>
+                    <li class="mb-2"><a href="privacy.html" class="text-muted text-decoration-none">Privacy</a></li>
+                    <li><a href="refund.html" class="text-muted text-decoration-none">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-3 col-lg-2">
+                <h6 class="fw-bold mb-3">Follow Us</h6>
+                <div class="d-flex justify-content-center justify-content-md-start gap-4 fs-4">
+                    <a href="https://www.linkedin.com/in/hirbee-5930793ab" target="_blank" class="text-dark">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                    <a href="https://www.instagram.com/hirbeeofficial/" target="_blank" class="text-dark">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5 opacity-25">
+
+        <div class="text-center small text-muted">
+            © 2026 HirBee Inc. All rights reserved.
+        </div>
+    </div>
+</footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Profile Update Modal -->
+    <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="updateProfileModalLabel">Update Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="profileUpdateForm">
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Full Name</label>
+                            <input type="text" class="form-control rounded-pill" id="updateName" placeholder="Your full name" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Mobile Number</label>
+                            <input type="tel" class="form-control rounded-pill" id="updateMobile" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Location</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-pill" id="updateLocation" placeholder="e.g. Jaipur, Rajasthan">
+                                <button class="btn btn-outline-secondary rounded-pill" type="button" onclick="fetchGeoLocation()">
+                                    <i class="bi bi-geo-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Profile Photo</label>
+                            <input type="file" class="form-control rounded-pill" id="updatePhoto" accept="image/*">
+                            <div class="mt-3 text-center">
+                                <img id="profilePreview" class="rounded-circle shadow" style="width:120px;height:120px;object-fit:cover;display:none;" alt="Profile Preview">
+                                <div id="modalDefaultIcon" class="d-flex align-items-center justify-content-center bg-light rounded-circle mx-auto" style="width:120px;height:120px;">
+                                    <i class="bi bi-person-fill text-muted fs-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-brand-primary rounded-pill px-4" id="profileSaveBtn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+   <!-- Subscription Modal -->
+<div class="modal fade" id="subscriptionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Upgrade Your Hiring Power</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-5 text-center">
+                <p class="text-muted mb-5">Get verified, trend your profile, attract better freelancers faster, and post unlimited jobs.</p>
+                
+                <div class="row g-4 justify-content-center">
+                    <!-- Free / Starter Plan -->
+                    <div class="col-md-5">
+                        <div class="pricing-card p-4 h-100 shadow-sm border">
+                            <h6 class="fw-bold text-muted mb-3">STARTER</h6>
+                            <h3 class="fw-bold text-dark">Free <small class="fs-6 text-muted">/ forever</small></h3>
+                            <ul class="list-unstyled my-4 text-start small">
+                                <li><i class="bi bi-check2 text-success me-2"></i> Post up to 5 jobs/month</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Basic visibility</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Standard support</li>
+                                <li><i class="bi bi-x text-danger me-2"></i> No verified badge</li>
+                                <li><i class="bi bi-x text-danger me-2"></i> No trending / priority</li>
+                            </ul>
+                            <button class="btn btn-outline-secondary w-100 rounded-pill mt-3" disabled>
+                                Current Plan (Free)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Premium Plan (the only paid one now) -->
+                    <div class="col-md-5">
+                        <div class="pricing-card popular p-4 h-100 shadow-lg border border-primary position-relative">
+                            <span class="popular-badge bg-primary text-white px-4 py-2">RECOMMENDED</span>
+                            <h6 class="fw-bold mb-3" style="color: var(--primary-purple);">PREMIUM</h6>
+                            <h3 class="fw-bold mt-2" style="color: var(--primary-purple);">₹49 <small class="fs-6 text-muted">/ month</small></h3>
+                            <ul class="list-unstyled my-4 text-start small">
+                                <li><i class="bi bi-check2 text-success me-2"></i> <strong>Unlimited</strong> job postings</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Verified company badge</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Trending profile (priority in searches)</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Priority support & faster responses</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i> Featured in "Nearby Talent"</li>
+                            </ul>
+                            <button class="btn btn-brand-primary w-100 rounded-pill shadow mt-3 fw-bold" 
+                                    onclick="paySubscription('PREMIUM', 49)">
+                                Upgrade to Premium – ₹49/mo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5 small text-muted">
+                    <i class="bi bi-shield-check me-1"></i> Secure payments via Razorpay • Cancel anytime • No hidden charges
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Notifications Modal -->
+    <div class="modal fade" id="clientNotifModal" tabindex="-1" aria-labelledby="clientNotifModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 bg-light">
+                    <h5 class="modal-title fw-bold" id="clientNotifModalLabel">Notifications</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div id="clientNotifList" class="list-group list-group-flush"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/script/dashboard.js"></script>
+    <script src="/script/tracker.js"></script>
+
+    <script>
+        // ================================================
+        // CLIENT DASHBOARD TOUR – Same Style as index.html (Mobile + Desktop)
+        // ================================================
+
+        async function waitForElementsAndRefresh() {
+    const importantElements = [
+        'headerVerifiedBadge',
+        'sidebarVerifiedBadge',
+        'mobileVerifiedBadge',
+        'subscriptionNavItem',
+        'mobileSubscriptionItem',
+        'userPlanBadge'
+    ];
+
+    // Wait max ~3 seconds (timeout safety)
+    let attempts = 0;
+    const maxAttempts = 5; // ~3 seconds @ 100ms interval
+
+    const interval = setInterval(async () => {
+        attempts++;
+        const allLoaded = importantElements.every(id => document.getElementById(id) !== null);
+
+        if (allLoaded) {
+            clearInterval(interval);
+            console.log("All badge elements ready → refreshing subscription UI");
+            await refreshSubscriptionStatus();           // 1st call
+            setTimeout(() => refreshSubscriptionStatus(), 800); // 2nd safety call
+        }
+
+        if (attempts >= maxAttempts) {
+            clearInterval(interval);
+            console.warn("Timeout: Some badge elements not found after waiting");
+            await refreshSubscriptionStatus(); // last try anyway
+        }
+    }, 100);
+}
+
+       
+           // ================================================
+// CLIENT DASHBOARD TOUR – Improved single-run logic
+// ================================================
+
+function startDashboardTour(force = false) {
+    const tourKey = 'hirbee_client_dashboard_tour_completed';
+
+    // Agar force nahi aur pehle complete ho chuka → exit
+    if (!force && localStorage.getItem(tourKey) === 'true') {
+        console.log("Tour already completed → skipping");
+        return;
+    }
+
+    const isMobile = window.innerWidth <= 992;
+
+    setTimeout(() => {
+        const intro = introJs();
+
+        intro.setOptions({
+            showProgress: true,
+            showBullets: true,
+            exitOnOverlayClick: false,
+            exitOnEsc: true,
+            nextLabel: 'Next →',
+            prevLabel: '← Back',
+            skipLabel: 'Skip',
+            doneLabel: 'Finish Tour',
+            scrollToElement: true,
+            scrollPadding: isMobile ? 100 : 60,
+            scrollDuration: 600,
+            disableInteraction: true,
+            overlayOpacity: isMobile ? 0.55 : 0.65,
+            tooltipClass: 'custom-intro-tooltip',
+            highlightClass: 'introjs-highlight'
+        });
+
+       const mobileSteps = [
+    { 
+        title: 'Welcome! 👋', 
+        intro: 'This is your Client Dashboard – post jobs, manage freelancers, and more.' 
+    },
+    { 
+        element: '.btn[data-bs-target="#mobileSidebar"]', 
+        intro: 'Tap here to edit profile, message , wallet , post job , proposals and many more.', 
+        position: 'bottom' 
+    },
+    
+    { 
+        title: 'All set! 🚀', 
+        intro: 'Access everything anytime from the menu. Happy hiring!' 
+    }
+];
+
+const desktopSteps = [
+    { 
+        title: 'Welcome to Your Dashboard! 👋', 
+        intro: 'This is your central hub to post jobs, track proposals, chat with freelancers, and manage everything.' 
+    },
+    { 
+        element: '#sidebarAvatar', 
+        intro: 'Your profile & wallet section – view balance or edit details here', 
+        position: 'right' 
+    },
+    { 
+        element: '#subscriptionNavItem', 
+        intro: 'Upgrade to Premium for unlimited postings and a verified badge', 
+        position: 'right' 
+    },
+    { 
+        element: '#statsRow', 
+        intro: 'Quick stats: active postings, total proposals, and nearby available freelancers', 
+        position: 'bottom' 
+    },
+    { 
+        element: '#dynamicContainer', 
+        intro: 'Your recent job postings appear here – manage proposals and hire the best fit', 
+        position: 'top' 
+    },
+    { 
+        title: 'All set! 🚀', 
+        intro: 'Use the sidebar anytime for quick access to everything. Happy hiring!' 
+    }
+];
+        intro.addSteps(isMobile ? mobileSteps : desktopSteps);
+
+        if (isMobile) {
+            intro.setOption('tooltipClass', 'custom-intro-tooltip mobile-friendly-tooltip');
+        }
+
+        intro.onchange(() => {
+            setTimeout(() => intro.refresh(), 600);
+        });
+
+        intro.oncomplete(() => localStorage.setItem(tourKey, 'true'));
+        intro.onexit(() => localStorage.setItem(tourKey, 'true'));
+
+        intro.start();
+    }, isMobile ? 1800 : 800);
+}
+
+      //Auto-start tour only on first login
+    document.addEventListener('DOMContentLoaded', () => {
+        // Your existing init code...
+
+        if (!localStorage.getItem('hirbee_client_dashboard_tour_completed')) {
+            setTimeout(() => startDashboardTour(), 1800);
+        }
+    });
+
+        // ================================================
+        // YOUR ORIGINAL SUBSCRIPTION & DASHBOARD LOGIC (UNCHANGED)
+        // ================================================
+
+        async function refreshSubscriptionStatus() {
+            const email = localStorage.getItem('userEmail');
+            if (!email) return;
+
+            try {
+                const res = await fetch(`https://hirbee-1.onrender.com/api/auth/user?email=${email}&_=${Date.now()}`);
+                if (!res.ok) throw new Error("Fetch failed");
+
+                const user = await res.json();
+
+                const plan = user.subscription_plan || 'FREE';
+                const status = user.subscription_status || 'NONE';
+                const endDateStr = user.subscription_end_date;
+                const isTrending = user.is_trending || false;
+
+                let isSubscribed = false;
+                if (plan !== 'FREE' && status === 'ACTIVE') {
+                    if (!endDateStr) {
+                        isSubscribed = true;
+                    } else {
+                        const expiry = new Date(endDateStr);
+                        isSubscribed = expiry > new Date();
+                    }
+                }
+
+                updateVerifiedUI(isSubscribed && isTrending, plan);
+
+            } catch (err) {
+                console.error(err);
+                updateVerifiedUI(false);
+            }
+        }
+
+        function updateVerifiedUI(isSubscribed, planName = 'Free') {
+            ['headerVerifiedBadge', 'sidebarVerifiedBadge', 'mobileVerifiedBadge'].forEach(id => {
+                document.getElementById(id)?.classList.toggle('d-none', !isSubscribed);
+            });
+
+            const planBadge = document.getElementById('userPlanBadge');
+            if (planBadge) {
+                planBadge.textContent = isSubscribed ? `${planName} Member` : 'Free Plan';
+                planBadge.className = isSubscribed ? 'fw-bold' : 'text-muted';
+                planBadge.style.color = isSubscribed ? 'var(--primary-purple)' : 'inherit';
+            }
+
+            const subNav = document.getElementById('subscriptionNavItem');
+            if (subNav) {
+                subNav.innerHTML = isSubscribed 
+                    ? `<a href="#" class="nav-link premium-member-link shadow-sm">
+                         <i class="bi bi-check-circle-fill me-3" style="color: var(--primary-purple);"></i> Premium Member
+                       </a>`
+                    : `<a href="#" class="nav-link premium-link shadow-sm" data-bs-toggle="modal" data-bs-target="#subscriptionModal">
+                         <i class="bi bi-star-fill me-3 text-warning"></i> Subscription
+                       </a>`;
+            }
+
+            const mobileSub = document.getElementById('mobileSubscriptionItem');
+            if (mobileSub) {
+                mobileSub.innerHTML = isSubscribed 
+                    ? `<a href="#" class="nav-link fw-bold" style="color: var(--primary-purple);">
+                         <i class="bi bi-check-circle-fill me-3" style="color: var(--primary-purple);"></i> Premium Member
+                       </a>`
+                    : `<a href="#" class="nav-link fw-bold" style="color: var(--primary-purple);" data-bs-toggle="modal" data-bs-target="#subscriptionModal">
+                         <i class="bi bi-star-fill me-3 text-warning"></i> Subscription
+                       </a>`;
+            }
+        }
+
+        // RAZORPAY PAYMENT + DIRECT ACTIVE (unchanged)
+       async function paySubscription(plan, amount) {
+    const email = localStorage.getItem('userEmail');
+    if (!email) return alert("Please login first");
+
+    // For STARTER / free → no payment, just activate (optional, can be removed if not needed)
+    if (plan.toUpperCase() === 'STARTER' || amount === 0) {
+        await verifySubscriptionOnServer('STARTER', 'FREE_PLAN_NO_ID');
+        return;
+    }
+
+    // Premium → always ₹49 (even if you show different in UI earlier)
+    const finalAmount = 49;
+
+    const options = {
+        "key": "rzp_test_Rz1yk3tgGSCQya",   // ← your test key, fine for now
+        "amount": finalAmount * 100,
+        "currency": "INR",
+        "name": "HirBee Premium",
+        "description": `Upgrade to PREMIUM for ₹${finalAmount}/mo`,
+        "handler": async function (response) {
+            console.log('Payment Success:', response);
+            await verifySubscriptionOnServer('PREMIUM', response.razorpay_payment_id);
+        },
+        "prefill": {
+            "name": localStorage.getItem('fullName') || "Client",
+            "email": email,
+            "contact": localStorage.getItem('mobile') || ""
+        },
+        "theme": { "color": "#8C4EC9" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function (response) {
+        alert("Payment Failed: " + (response.error.description || "Unknown error"));
+    });
+    rzp.open();
+}
+
+// Keep verifySubscriptionOnServer as it is (already good)
+
+        async function verifySubscriptionOnServer(plan, paymentId) {
+            const email = localStorage.getItem('userEmail');
+            const payload = {
+                email: email,
+                payment_id: paymentId,
+                plan: plan
+            };
+
+            try {
+                const res = await fetch('https://hirbee-1.onrender.com/api/auth/subscription/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    showSubscriptionSuccess();
+                    await refreshSubscriptionStatus();
+                    bootstrap.Modal.getInstance(document.getElementById('subscriptionModal')).hide();
+                } else {
+                    alert("Activation failed: " + await res.text());
+                }
+            } catch (err) {
+                alert("Server error. Please try again.");
+            }
+        }
+
+        function showSubscriptionSuccess() {
+            const el = document.getElementById('subscriptionSuccess');
+            el.classList.remove('d-none');
+            el.classList.add('show');
+            setTimeout(() => {
+                el.classList.remove('show');
+                setTimeout(() => el.classList.add('d-none'), 500);
+            }, 4000);
+        }
+
+       document.addEventListener('DOMContentLoaded', async () => {
+    // Pehle basic UI load hone do
+    refreshUI(); // agar aapke paas freelancer wale jaisa refreshUI hai to call karo
+
+    // Subscription status forcefully refresh karo with waiting
+    await waitForElementsAndRefresh();
+
+    // Normal periodic check (har 3 min)
+    setInterval(async () => {
+        if (document.hasFocus()) {
+            await refreshSubscriptionStatus();
+        }
+    }, 180000);
+
+    // Extra safety: jab bhi profile modal khule ya section change ho
+    const profileModal = document.getElementById('updateProfileModal');
+    if (profileModal) {
+        profileModal.addEventListener('shown.bs.modal', async () => {
+            await refreshSubscriptionStatus();
+        });
+    }
+
+    // Agar aapke paas showSection function hai to usme bhi add kar sakte ho
+    // example:
+    // const originalShowSection = showSection;
+    // showSection = async function(type) {
+    //     await refreshSubscriptionStatus();
+    //     originalShowSection.apply(this, arguments);
+    // };
+});
+
+
+// ────────────────────────────────────────────────
+// NOTIFICATIONS – Load automatically when modal opens
+// ────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+    const notifModal = document.getElementById('clientNotifModal');
+    
+    if (!notifModal) {
+        console.warn("Notifications modal (#clientNotifModal) not found");
+        return;
+    }
+
+    console.log("✅ Notification modal listener attached");
+
+    notifModal.addEventListener('show.bs.modal', async function () {
+        console.log("Modal opening → loading notifications");
+        await loadClientNotifications();
+    });
+});
+
+async function loadClientNotifications() {
+    const container = document.getElementById('clientNotifList');
+    if (!container) {
+        console.error("clientNotifList container not found");
+        return;
+    }
+
+    // Show loading state
+    container.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status" style="color: var(--primary-purple);">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading notifications...</p>
+        </div>`;
+
+    const email = localStorage.getItem('userEmail');
+    if (!email) {
+        container.innerHTML = '<div class="alert alert-warning m-4 text-center">Please login to see notifications</div>';
+        return;
+    }
+
+    try {
+        // Use the same endpoint you already fetch proposals from
+        const res = await fetch(`https://hirbee-1.onrender.com/api/proposals/client-list?email=${encodeURIComponent(email)}`);
+        
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const proposals = await res.json();
+
+        // Reuse your existing global variable if you want, or just use local
+        allReceivedProposals = proposals;
+
+        if (proposals.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-bell-slash fs-1 mb-3 d-block"></i>
+                    No new notifications / proposals yet
+                </div>`;
+            updateNotifBadge(0);
+            return;
+        }
+
+        // Build notification list (same style as your old function)
+        let html = proposals.reverse().map(p => `
+            <div class="list-group-item list-group-item-action border-0 py-3">
+                <div class="d-flex align-items-center">
+                    <div class="bg-lavender p-3 rounded-circle me-3" style="width:48px;height:48px;">
+                        <i class="bi bi-file-earmark-person fs-4 text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="mb-1 fw-medium">
+                            <b>${p.freelancerEmail || 'A freelancer'}</b> sent a proposal for your project
+                        </p>
+                        <small class="text-muted d-block mb-2">
+                            ${new Date(p.createdAt || Date.now()).toLocaleString('en-IN', {dateStyle:'medium', timeStyle:'short'})}
+                        </small>
+                        <small class="text-primary fw-bold" style="cursor:pointer;" 
+                               onclick="showSection('proposals'); bootstrap.Modal.getInstance(document.getElementById('clientNotifModal')).hide();">
+                            View Proposal →
+                        </small>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = html;
+
+        // Clear unread badge after viewing
+        lastSeenPropCount = proposals.length;
+        localStorage.setItem('lastSeenPropCount', lastSeenPropCount);
+        updateNotifBadge(0);
+
+    } catch (err) {
+        console.error("Notifications load error:", err);
+        container.innerHTML = `
+            <div class="alert alert-danger m-4 text-center">
+                Failed to load notifications<br>
+                <small>${err.message}</small>
+            </div>`;
+    }
+}
+
+function updateNotifBadge(count) {
+    const badge = document.getElementById('headerNotifBadge');
+    if (!badge) return;
+    
+    if (count > 0) {
+        badge.textContent = count > 99 ? '99+' : count;
+        badge.classList.remove('d-none');
+    } else {
+        badge.classList.add('d-none');
+    }
+}
+
+    </script>
+</body>
+    <script src="../script/session.js"></script>
+
+</html>

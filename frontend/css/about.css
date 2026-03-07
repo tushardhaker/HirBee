@@ -1,0 +1,99 @@
+:root {
+    --bg-lavender: #F6EEFF;
+    --primary-purple: #8C4EC9;
+    --secondary-lilac: #DFC6F9;
+    --accent-orchid: #B979F7;
+    --dark-purple: #2D1B41;
+    --glass: rgba(255, 255, 255, 0.85);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg-lavender);
+    color: var(--dark-purple);
+}
+.navbar {
+    min-height: 60px !important;     /* 80px ya 90px try karo – tumhare logo ke hisaab se */
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+.navbar-brand img {
+    max-height: 180px;                /* logo height limit kar do */
+    width: auto;
+    object-fit: contain;
+}
+
+/* Navbar Consistency */
+.navbar {
+    background: rgba(246, 238, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--secondary-lilac);
+}
+
+.text-brand-primary { color: var(--primary-purple) !important; }
+
+.dark-nav {
+    color: #0f172a !important;
+    font-weight: 700;
+}
+
+.active-link { color: var(--primary-purple) !important; }
+
+.btn-brand-primary {
+    background: var(--primary-purple);
+    border: none;
+    color: white;
+}
+
+/* Cards & Glassmorphism */
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border-radius: 30px;
+    border: 1.5px solid var(--secondary-lilac);
+    padding: 3rem;
+    box-shadow: 0 20px 40px rgba(140, 78, 201, 0.08);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-purple), var(--accent-orchid));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.vision-icon {
+    font-size: 8rem;
+    color: var(--primary-purple);
+    opacity: 0.8;
+}
+
+/* Value Cards */
+.value-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--secondary-lilac);
+    transition: transform 0.3s ease;
+}
+
+.value-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-purple);
+}
+
+.value-icon {
+    font-size: 2.5rem;
+    color: var(--primary-purple);
+}
+
+/* Mission Accent */
+.mission-bar {
+    width: 80px;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-purple), var(--accent-orchid));
+    border-radius: 10px;
+}
+
+.footer-custom {
+    border-top: 1px solid var(--secondary-lilac) !important;
+}

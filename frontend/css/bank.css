@@ -1,0 +1,134 @@
+/* ================================================================
+   HirBee - BANK DETAILS PAGE (bank.css)
+   ================================================================ */
+
+:root {
+    --bg-lavender: #F6EEFF;    /* Lavender Mist */
+    --primary-purple: #8C4EC9; /* Royal Purple */
+    --secondary-lilac: #DFC6F9; /* Soft Lilac */
+    --accent-orchid: #B979F7;  /* Orchid Glow */
+    --text-dark: #2D1B41;      /* Deep Eggplant */
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--bg-lavender) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.card {
+    border-radius: 24px;
+    border: 1px solid var(--secondary-lilac) !important;
+    box-shadow: 0 15px 35px rgba(140, 78, 201, 0.1) !important;
+    background-color: var(--white) !important;
+    overflow: hidden;
+}
+
+.back-link {
+    color: var(--primary-purple) !important;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-link:hover {
+    color: var(--accent-orchid) !important;
+    transform: translateX(-3px);
+}
+
+.form-label {
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-control {
+    border: 1px solid var(--secondary-lilac) !important;
+    border-radius: 12px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    background-color: var(--white);
+}
+
+.form-control:focus {
+    border-color: var(--primary-purple) !important;
+    box-shadow: 0 0 0 0.25rem rgba(140, 78, 201, 0.15) !important;
+    outline: none;
+}
+
+.input-group-text {
+    background-color: var(--bg-lavender) !important;
+    border: 1px solid var(--secondary-lilac) !important;
+    color: var(--primary-purple) !important;
+    border-radius: 12px 0 0 12px;
+}
+
+.btn-save {
+    background: linear-gradient(45deg, var(--primary-purple), var(--accent-orchid)) !important;
+    color: var(--white) !important;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 10px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(140, 78, 201, 0.3);
+    opacity: 0.95;
+}
+
+.or-divider {
+    color: var(--primary-purple) !important;
+    background-color: var(--white) !important;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+hr {
+    border-top: 1px solid var(--secondary-lilac) !important;
+    opacity: 0.5;
+}
+
+.security-badge {
+    background: var(--bg-lavender) !important;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px dashed var(--accent-orchid) !important;
+}
+
+.security-badge i {
+    color: var(--primary-purple) !important;
+}
+
+::placeholder {
+    color: var(--accent-orchid);
+    opacity: 0.5;
+}
+
+/* --- TOAST STYLING (For Modern UI) --- */
+#toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+.custom-toast {
+    min-width: 300px; padding: 16px; margin-bottom: 10px; border-radius: 16px;
+    background: white; box-shadow: 0 10px 25px rgba(140, 78, 201, 0.2);
+    display: flex; align-items: center; gap: 12px;
+    animation: slideIn 0.3s ease-out; border-left: 6px solid var(--primary-purple);
+}
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.toast-success { border-left-color: #22c55e; }
+.toast-error { border-left-color: #ef4444; }
+.toast-fade-out { animation: slideOut 0.3s ease-in forwards; }
+@keyframes slideOut { to { transform: translateX(100%); opacity: 0; } }

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Role | HirBee</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================================================================
+           ROYAL PURPLE & LAVENDER MIST THEME - ROLE SELECTION
+           ================================================================ */
+        :root {
+            --bg-lavender: #F6EEFF;
+            --primary-purple: #8C4EC9;
+            --secondary-lilac: #DFC6F9;
+            --accent-orchid: #B979F7;
+            --dark-purple: #2D1B41;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            background: var(--bg-lavender);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--dark-purple);
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: var(--primary-purple);
+        }
+
+        .role-container {
+            width: 100%;
+            max-width: 550px;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid var(--secondary-lilac);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px -12px rgba(140, 78, 201, 0.15);
+        }
+
+        .brand-logo {
+            font-size: 2.5rem;
+            color: var(--primary-purple);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-orchid));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .role-selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .role-option {
+            background: #ffffff;
+            border: 2px solid var(--secondary-lilac);
+            padding: 25px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .role-option:hover {
+            border-color: var(--primary-purple);
+            background: var(--bg-lavender);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(140, 78, 201, 0.1);
+        }
+
+        .icon-box {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .role-option:hover .icon-box {
+            transform: scale(1.1);
+        }
+
+        .freelancer-icon { color: var(--primary-purple); }
+        .client-icon { color: var(--accent-orchid); }
+
+        .brand-link {
+            color: var(--primary-purple);
+            font-weight: 700;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-purple);
+            border-color: var(--primary-purple);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .role-selection-grid {
+                grid-template-columns: 1fr;
+            }
+            .glass-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="spinner-border" role="status"></div>
+
+    <div class="role-container">
+        <div class="glass-card text-center">
+            
+            <div class="brand-logo mb-3">
+                <i class="bi bi-rocket-takeoff-fill"></i>
+            </div>
+            
+            <h2 class="fw-bold mb-2"><span class="text-gradient">Registration Complete!</span></h2>
+            <p class="text-secondary small mb-5">Choose your path to finish setting up your account.</p>
+            
+            <div class="role-selection-grid">
+                <div class="role-option" onclick="selectRole('FREELANCER')">
+                    <div class="icon-box freelancer-icon">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+                    <h4 class="fw-bold">Freelancer</h4>
+                    <p class="small text-muted mb-0">I want to work</p>
+                </div>
+
+                <div class="role-option" onclick="selectRole('CLIENT')">
+                    <div class="icon-box client-icon">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                    <h4 class="fw-bold">Client</h4>
+                    <p class="small text-muted mb-0">I want to hire</p>
+                </div>
+            </div>
+
+            <div class="mt-5 form-check d-flex justify-content-center align-items-center gap-2">
+                <input type="checkbox" class="form-check-input" id="terms">
+                <label class="form-check-label small text-secondary" for="terms">
+                    I agree to the <a href="#" class="brand-link text-decoration-none">Terms & Conditions</a>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script src="/script/role.js"></script>
+</body>
+</html>

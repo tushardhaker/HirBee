@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HirBee | Secure Messaging</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary-purple: #8C4EC9; 
+            --bg-lavender: #F6EEFF; 
+            --chat-bg: #f0f2f5;
+        }
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; }
+
+        .chat-container-main { display: flex; height: 100vh; width: 100%; position: relative; }
+
+        /* Sidebar Responsive Logic */
+        .chat-sidebar { 
+            width: 350px; 
+            border-right: 1px solid #ddd; 
+            background: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 10;
+        }
+
+        .chat-main-wrapper { 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            background: var(--chat-bg); 
+            position: relative; 
+            z-index: 5;
+        }
+
+        /* Responsive Mobile Toggling */
+        @media (max-width: 768px) {
+            .chat-sidebar { 
+                width: 100%; 
+                position: absolute; 
+                height: 100%; 
+                left: 0; 
+                transition: transform 0.3s ease;
+            }
+            .chat-main-wrapper { 
+                width: 100%; 
+                position: absolute; 
+                height: 100%; 
+                left: 0; 
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            }
+            /* Jab chat open ho */
+            body.chat-open .chat-sidebar { transform: translateX(-100%); }
+            body.chat-open .chat-main-wrapper { transform: translateX(0); }
+        }
+
+        /* Components */
+        .contact-list { overflow-y: auto; flex-grow: 1; }
+        .contact-item { cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: 0.3s; padding: 15px; }
+        .contact-item:hover { background-color: var(--bg-lavender); }
+        .contact-item.active { background-color: #f8f9fa; border-left: 4px solid var(--primary-purple); }
+        
+        .avatar-sm { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 50%; }
+
+        /* Chat Bubbles */
+        .message-wrapper { display: flex; flex-direction: column; margin-bottom: 15px; padding: 0 10px; }
+        .sent { align-items: flex-end; }
+        .received { align-items: flex-start; }
+        .message-content { max-width: 85%; padding: 10px 15px; border-radius: 18px; font-size: 0.95rem; }
+        .sent .message-content { background-color: var(--primary-purple); color: white; border-bottom-right-radius: 4px; }
+        .received .message-content { background-color: white; color: black; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        #callRequestOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95); z-index: 1000;
+            display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
+        }
+
+        .back-btn { display: none; }
+        @media (max-width: 768px) { .back-btn { display: block; margin-right: 10px; } }
+    </style>
+</head>
+<body>
+
+<div class="chat-container-main">
+    <aside class="chat-sidebar shadow-sm">
+        <div class="p-3 d-flex align-items-center justify-content-between" style="background: var(--primary-purple); color: white;">
+            <div class="d-flex align-items-center">
+                <!-- <a href="client-dashboard.html" class="text-white me-2"><i class="bi bi-chevron-left"></i></a> -->
+                <h5 class="mb-0 fw-bold">Messages</h5>
+            </div>
+            <i class="bi bi-three-dots-vertical"></i>
+        </div>
+        <div class="p-3">
+            <div class="input-group bg-light rounded-pill px-2">
+                <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" class="form-control border-0 bg-transparent py-2" placeholder="Search chats...">
+            </div>
+        </div>
+        <div class="contact-list" id="contactList">
+            <div class="text-center p-4"><div class="spinner-border spinner-border-sm text-primary"></div></div>
+        </div>
+    </aside>
+
+    <div class="chat-main-wrapper">
+        <div id="callRequestOverlay">
+            <div class="spinner-grow text-primary mb-3"></div>
+            <h5 class="fw-bold">Meeting Invitation</h5>
+            <p class="text-muted">Send a request to <span id="overlayPartner"></span>?</p>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary px-4 rounded-pill" id="confirmSendCall">Send Invite</button>
+                <button class="btn btn-light px-4 border rounded-pill" onclick="hideCallOverlay()">Cancel</button>
+            </div>
+        </div>
+
+        <header class="chat-header shadow-sm bg-white p-2 p-md-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center overflow-hidden">
+                    <button class="btn btn-light rounded-circle back-btn" onclick="closeChat()">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+                    <div class="avatar bg-primary text-white avatar-sm me-2 me-md-3 flex-shrink-0" id="partnerAvatar">?</div>
+                    <div class="text-truncate">
+                        <h6 class="mb-0 fw-bold text-truncate" id="partnerDisplay">Select Contact</h6>
+                        <small class="text-success" id="onlineStatus">Online</small>
+                    </div>
+                </div>
+                <div class="header-actions flex-shrink-0" id="actionButtons" style="display: none;">
+                    <button class="btn btn-outline-primary btn-sm rounded-pill border-0 fs-5" onclick="showCallOverlay('voice')"><i class="bi bi-telephone-fill"></i></button>
+                    <button class="btn btn-primary btn-sm rounded-pill ms-1 px-3" onclick="showCallOverlay('video')"><i class="bi bi-camera-video-fill"></i> <span class="d-none d-md-inline">Meet</span></button>
+                </div>
+            </div>
+        </header>
+
+        <div class="chat-box-container p-3" id="chatBox" style="flex-grow: 1; overflow-y: auto;">
+            <div class="text-center p-5 text-muted">
+                <i class="bi bi-chat-heart fs-1 text-primary opacity-25"></i>
+                <p class="mt-2">Start a conversation with your freelancers</p>
+            </div>
+        </div>
+
+        <footer class="chat-footer p-2 p-md-3 bg-white border-top">
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-light rounded-circle" onclick="document.getElementById('fileInput').click()">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+                <input type="file" id="fileInput" hidden accept="image/*" onchange="handleFileUpload(this)">
+                
+                <div class="input-group bg-light rounded-pill px-2 flex-grow-1">
+                    <input type="text" id="msgInput" class="form-control border-0 bg-transparent py-2" placeholder="Type message...">
+                </div>
+                
+                <button class="btn btn-primary rounded-circle shadow-sm" style="width: 45px; height: 45px;" onclick="sendMessage()">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<div class="modal fade" id="callModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark border-0">
+            <div id="callContainer" style="width: 100%; height: 100vh;"></div>
+            <div style="position: absolute; bottom: 30px; width: 100%; text-align: center; z-index: 9999;">
+                <button class="btn btn-danger btn-lg rounded-pill px-5" onclick="handleEndCall()">End Session</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+<script>
+    // Logic for Responsive Switching
+    function openChat() {
+        document.body.classList.add('chat-open');
+    }
+
+    function closeChat() {
+        document.body.classList.remove('chat-open');
+    }
+
+    // Wrap your existing contact-item click logic to call openChat()
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.contact-item')) {
+            if (window.innerWidth <= 768) {
+                openChat();
+            }
+        }
+    });
+
+    // Handle Window Resize to prevent stuck states
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeChat();
+    });
+</script>
+<script src="/script/message.js"></script>
+
+</body>
+</html>

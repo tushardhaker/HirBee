@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Jobs | HirBee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <style>
+    :root {
+        --bg-lavender: #F6EEFF;
+        --primary-purple: #8C4EC9;
+        --secondary-lilac: #DFC6F9;
+        --accent-orchid: #B979F7;
+        --dark-purple: #6A359C;
+    }
+
+    body { 
+        background-color: var(--bg-lavender); 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+    }
+
+    /* ── Login Prompt ── Purple Theme ── */
+    /* ── Login Prompt ── Purple Theme ── */
+#loginPromptOverlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(140, 78, 201, 0.35);          /* soft purple overlay */
+    backdrop-filter: blur(12px);
+    z-index: 10001; display: none; align-items: center; justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.prompt-card {
+    background: white;
+    padding: 40px;
+    border-radius: 35px;
+    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 25px 60px rgba(140, 78, 201, 0.4);
+    transform: translateY(30px);
+    animation: slideUp 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+    border: 2px solid var(--secondary-lilac);
+}
+
+/* Yeh line add karo ya update karo → icon black ho jayega */
+.prompt-card .bi-person-circle {
+    color: #000000 !important;          /* black color for user icon */
+    font-size: 4rem;
+}
+
+    .prompt-card h3 {
+        color: var(--dark-purple);                    /* dark purple heading */
+    }
+
+    .prompt-card p {
+        color: #555;
+    }
+
+    .prompt-card .btn-primary {
+        background-color: var(--primary-purple) !important;
+        border-color: var(--primary-purple) !important;
+        color: white;
+    }
+
+    .prompt-card .btn-primary:hover {
+        background-color: var(--dark-purple) !important;
+        border-color: var(--dark-purple) !important;
+    }
+
+    .prompt-card .btn-link {
+        color: var(--primary-purple);
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { to { transform: translateY(0); } }
+
+    /* ── Success Overlay ── (unchanged) */
+    .app-success-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+        z-index: 10000; display: none; align-items: center; justify-content: center; flex-direction: column;
+    }
+    .success-tick-circle {
+        width: 80px; height: 80px; background: #198754; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;
+        margin-bottom: 15px; animation: scaleIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+    /* ── Navbar ── WHITE background ── */
+    .navbar {
+        background-color: white !important;
+        min-height: 80px !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    }
+
+    .navbar-brand img {
+        max-height: 80px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .navbar-brand {
+        padding: 0 !important;
+    }
+
+    .dark-nav {
+        color: var(--text-dark) !important;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .dark-nav:hover,
+    .dark-nav.active {
+        color: var(--primary-purple) !important;
+    }
+
+    .btn-brand-primary {
+        background: var(--primary-purple);
+        border: none;
+        color: white;
+    }
+
+    .btn-brand-primary:hover {
+        background: var(--dark-purple);
+    }
+
+    /* ── Back Button Bar ── (kept purple for contrast, can change to white if you want) */
+    .btn-back {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+    }
+    .btn-back:hover {
+        color: var(--secondary-lilac);
+        transform: translateX(-5px);
+    }
+
+    /* ── Rest of your original styles (unchanged) ── */
+    .filter-card {
+        background: white; border-radius: 50px; padding: 8px 20px;
+        border: 2px solid var(--secondary-lilac); box-shadow: 0 4px 15px rgba(140,78,201,0.1);
+    }
+
+    .job-card {
+        border: none; border-radius: 20px; transition: all 0.3s ease;
+        background: white; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .job-card:hover {
+        transform: translateY(-5px); box-shadow: 0 15px 30px rgba(140,78,201,0.15);
+    }
+
+    .card-accent-line { height: 5px; width: 100%; }
+    .bg-local { background-color: var(--primary-purple); }
+    .bg-global { background-color: #000000; }
+
+    .price-tag { color: #000000; font-weight: 800; font-size: 1.25rem; }
+
+    .category-badge {
+        background-color: var(--bg-lavender); color: var(--primary-purple);
+        font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 10px;
+        display: inline-block;
+    }
+
+    .client-email-badge {
+        font-size: 0.8rem; color: #6c757d; background: #f8f9fa;
+        padding: 2px 10px; border-radius: 5px; border: 1px solid #eee;
+    }
+
+    .job-details-text {
+        color: #6c757d; font-size: 0.9rem; line-height: 1.6;
+        margin-bottom: 15px; white-space: pre-line;
+    }
+    
+    .clamped-text {
+        display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .btn-apply {
+        background-color: var(--primary-purple); border: none; color: white;
+        font-weight: 600; border-radius: 50px; padding: 10px 20px; transition: all 0.3s ease;
+    }
+    .btn-apply:hover {
+        background-color: var(--dark-purple); color: white;
+        box-shadow: 0 5px 15px rgba(140,78,201,0.3);
+    }
+
+    .modal-content { border-radius: 25px; border: none; }
+    .modal-header {
+        background-color: var(--bg-lavender); border-bottom: 2px solid var(--secondary-lilac);
+        border-radius: 25px 25px 0 0;
+    }
+    .job-brief-box {
+        background-color: var(--bg-lavender); border-left: 5px solid var(--primary-purple);
+        padding: 15px; border-radius: 10px; max-height: 400px; overflow-y: auto;
+    }
+
+    #errorPopupOverlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(108,117,125,0.6); backdrop-filter: blur(10px);
+        z-index: 10002; display: none; align-items: center; justify-content: center;
+    }
+
+    .error-popup {
+        background: linear-gradient(135deg, #ffffff, #f8f5ff);
+        border-radius: 30px;
+        padding: 40px 30px; max-width: 480px; width: 90%;
+        box-shadow: 0 20px 50px rgba(140,78,201,0.4); border: 2px solid var(--secondary-lilac);
+        text-align: center; transform: scale(0.8); opacity: 0;
+        transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+
+    #errorPopupOverlay.show .error-popup { transform: scale(1); opacity: 1; }
+
+    .error-icon { font-size: 4.5rem; color: #dc3545; margin-bottom: 20px; }
+    .error-title { font-size: 1.8rem; font-weight: 700; color: var(--dark-purple); margin-bottom: 15px; }
+    .error-message { color: #6c757d; font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px; }
+
+    .error-btn-upgrade {
+        background: linear-gradient(135deg, var(--primary-purple), var(--accent-orchid));
+        color: white; border: none; padding: 14px 40px; font-weight: 600;
+        border-radius: 50px; font-size: 1.1rem; transition: all 0.3s;
+    }
+    .error-btn-upgrade:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(140,78,201,0.5); }
+
+    .error-btn-close {
+        background: transparent; border: 2px solid #6c757d; color: #6c757d;
+        padding: 12px 30px; border-radius: 50px; font-weight: 600; margin-left: 15px;
+    }
+    
+    .text-black-bold { color: #000000 !important; font-weight: 700 !important; }
+    .badge-global-black { background-color: #000000 !important; color: #ffffff !important; }
+
+    @media (max-width: 991.98px) {
+        .navbar-nav {
+            text-align: center;
+            padding-top: 1rem;
+        }
+    }
+</style>
+    
+</head>
+<body>
+
+    
+    <div id="loginPromptOverlay">
+        <div class="prompt-card">
+            <div class="mb-4">
+                <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
+            </div>
+            <h3 class="fw-bold text-dark">Login Required</h3>
+            <p class="text-muted">Please log in to your account to view details and apply for this job.</p>
+            <div class="d-grid gap-2 mt-4">
+                <a href="login.html" class="btn btn-primary rounded-pill py-3 fw-bold shadow">Login Now</a>
+                <button onclick="hideLoginPrompt()" class="btn btn-link text-muted text-decoration-none">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="applicationSuccessOverlay" class="app-success-overlay">
+        <div class="success-tick-circle">
+            <i class="bi bi-check-lg"></i>
+        </div>
+        <h4 class="fw-bold text-dark">Proposal Submitted!</h4>
+        <p class="text-muted" id="redirectMsg">Redirecting to your dashboard...</p>
+    </div>
+
+    <div id="errorPopupOverlay">
+        <div class="error-popup">
+            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+            <h3 class="error-title">Limit Reached!</h3>
+            <p class="error-message" id="errorMessageText">You have reached the weekly limit of 3 bids as a free user.</p>
+            <div class="mt-4">
+                <a href="freelancer-dashboard.html" class="btn error-btn-upgrade me-2">Upgrade Now <i class="bi bi-rocket-takeoff-fill ms-2"></i></a>
+                <button onclick="hideErrorPopup()" class="btn error-btn-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+     <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top py-3 bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bolder fs-3 text-brand-primary d-flex align-items-center" href="index.html">
+                <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" class="me-2" style="height: 80px; width: auto;">
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link dark-nav px-3" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link dark-nav px-3" href="total_jobs.html">Find Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link dark-nav active-link px-3" href="about.html">About</a></li>
+                </ul>
+                <div class="d-flex flex-column flex-lg-row align-items-center gap-3 mt-3 mt-lg-0">
+                    <button class="btn btn-link dark-nav text-decoration-none fw-bold" onclick="location.href='login.html'">Login</button>
+                    <button class="btn btn-brand-primary rounded-pill px-4 py-2 fw-bold" onclick="location.href='signup.html'">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="row mb-5 align-items-center">
+            <div class="col-md-7">
+                <h1 class="fw-bold text-dark mb-1">Available Gigs</h1>
+                <p id="totalCountText" class="text-muted fs-5">Scanning for active opportunities...</p>
+            </div>
+            <div class="col-md-5">
+                <div class="filter-card d-flex align-items-center">
+                    <i class="bi bi-funnel-fill text-primary me-2"></i>
+                    <select class="form-select border-0 shadow-none bg-transparent fw-semibold" id="filterType" onchange="filterDisplay()">
+                        <option value="ALL">All Categories</option>
+                        <option value="LOCAL">Local Markets</option>
+                        <option value="GLOBAL">Global Reach</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="totalJobsContainer">
+            <div class="col-12 text-center p-5">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+                <p class="mt-3 fw-bold text-primary">Fetching latest jobs...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="applyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-dark"><i class="bi bi-pencil-square me-2 text-primary"></i>Job Details & Proposal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="jobBrief" class="job-brief-box mb-4"></div>
+                    
+                    <form id="proposalForm">
+                        <input type="hidden" id="applyJobId">
+                        <input type="hidden" id="applyClientEmail">
+                        <input type="hidden" id="applyJobDetails">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-secondary">YOUR BID AMOUNT (₹)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0">₹</span>
+                                    <input type="number" id="bidAmount" class="form-control border-start-0 ps-0 fw-bold" placeholder="0.00" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-secondary">COVER LETTER</label>
+                            <textarea id="coverLetter" class="form-control" rows="5" placeholder="Explain why you are the best fit for this project..." required></textarea>
+                        </div>
+                        <button type="submit" id="submitProposalBtn" class="btn btn-apply w-100 py-3 shadow">
+                            Submit Proposal <i class="bi bi-send-fill ms-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!-- Footer -->
+    <footer class="footer-custom pt-5 pb-4 border-top bg-white">
+        <div class="container">
+            <div class="row text-md-start text-center gy-4">
+                <div class="col-lg-4 col-md-12">
+                    <a class="navbar-brand fw-800 fs-4 mb-3 d-inline-block" href="index.html">
+                        <img src="/assets/images/Hirqqq.png" alt="HirBee Logo" class="me-2" style="height: 70px; width: auto;">
+                    </a>
+                    <p class="text-muted pe-lg-5">
+                        The world's most secure marketplace for modern freelancers and ambitious businesses. 
+                        Manage projects, secure payments, and grow your career.
+                    </p>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Platform</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="total_jobs.html" class="text-muted text-decoration-none hover-purple">Browse Jobs</a></li>
+                        <li class="mb-2"><a href="freelancers.html" class="text-muted text-decoration-none hover-purple">Find Talent</a></li>
+                        <li class="mb-2"><a href="enterprise.html" class="text-muted text-decoration-none hover-purple">Enterprise</a></li>
+                        <li class="mb-2"><a href="escrow.html" class="text-muted text-decoration-none hover-purple">Escrow</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Company</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="about.html" class="text-muted text-decoration-none hover-purple">About Us</a></li>
+                        <li class="mb-2"><a href="careers.html" class="text-muted text-decoration-none hover-purple">Careers <span class="badge bg-primary-subtle text-primary rounded-pill small" style="font-size: 0.7rem;">Hiring</span></a></li>
+                        <li class="mb-2"><a href="contact.html" class="text-muted text-decoration-none hover-purple">Contact Support</a></li>
+                        <li class="mb-2"><a href="terms.html" class="text-muted text-decoration-none hover-purple">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Resources & Policy</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="help.html" class="text-muted text-decoration-none hover-purple">Help Center</a></li>
+                        <li class="mb-2"><a href="dispute-policy.html" class="text-muted text-decoration-none hover-purple">Dispute Policy</a></li>
+                        <li class="mb-2"><a href="privacy.html" class="text-muted text-decoration-none hover-purple">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="refund.html" class="text-muted text-decoration-none hover-purple">Refund Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold text-dark mb-3">Social Platform</h6>
+                    <div class="d-flex justify-content-center justify-content-md-start gap-3">
+                        <a href="https://www.linkedin.com/in/hirbee-5930793ab" target="_blank" rel="noopener noreferrer"
+                           class="text-dark fs-5 shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                           style="width: 40px; height: 40px; background: #f8f9fa; transition: all 0.3s;">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="https://www.instagram.com/hirbeeofficial/" target="_blank" rel="noopener noreferrer"
+                           class="text-dark fs-5 shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                           style="width: 40px; height: 40px; background: #f8f9fa; transition: all 0.3s;">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5 opacity-10">
+
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-muted small mb-0">© 2026 HirBee Inc. All rights reserved. Made for the future of work.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-3">
+                        <span class="small text-muted"><i class="bi bi-globe me-1"></i> English (US)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let cachedJobs = [];
+        const API_BASE = "https://hirbee-1.onrender.com/api/jobs";
+
+        function showLoginPrompt() { document.getElementById('loginPromptOverlay').style.display = 'flex'; }
+        function hideLoginPrompt() { document.getElementById('loginPromptOverlay').style.display = 'none'; }
+
+        function showErrorPopup(message = "Something went wrong!") {
+            document.getElementById('errorMessageText').innerText = message;
+            document.getElementById('errorPopupOverlay').style.display = 'flex';
+            setTimeout(() => document.getElementById('errorPopupOverlay').classList.add('show'), 10);
+        }
+
+        function hideErrorPopup() {
+            document.getElementById('errorPopupOverlay').classList.remove('show');
+            setTimeout(() => document.getElementById('errorPopupOverlay').style.display = 'none', 400);
+        }
+
+        // Helper to get URL parameter
+        function getParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        async function loadAllJobs() {
+            const container = document.getElementById('totalJobsContainer');
+            const userRole = localStorage.getItem('userRole');
+
+            try {
+                let endpoint = (userRole === 'ADMIN') ? `${API_BASE}/admin-all` : `${API_BASE}/freelancer-feed`;
+                const res = await fetch(endpoint);
+                if (!res.ok) throw new Error();
+
+                const allFetchedJobs = await res.json();
+                cachedJobs = (userRole !== 'ADMIN') ? allFetchedJobs.filter(j => j.status !== 'BANNED') : allFetchedJobs;
+
+                // Apply filters from home page search (if any)
+                applyHomeSearchFilters();
+
+                renderJobs(cachedJobs);
+            } catch (e) { 
+                container.innerHTML = `<div class='col-12 text-center p-5 text-danger fw-bold'>Unable to connect to server.</div>`; 
+            }
+        }
+
+        function applyHomeSearchFilters() {
+            const category = getParam('category');
+            const loc      = getParam('location')?.toLowerCase();
+            const key      = getParam('keyword')?.toLowerCase();
+
+            if (!category && !loc && !key) return;
+
+            cachedJobs = cachedJobs.filter(job => {
+                let match = true;
+
+                if (category && job.category !== category) match = false;
+
+                if (loc) {
+                    const jobLoc = (job.location || '').toLowerCase();
+                    if (!jobLoc.includes(loc)) match = false;
+                }
+
+                if (key) {
+                    const title  = (job.title  || '').toLowerCase();
+                    const detail = (job.details || '').toLowerCase();
+                    if (!title.includes(key) && !detail.includes(key)) match = false;
+                }
+
+                return match;
+            });
+        }
+
+        function renderJobs(jobs) {
+            const container = document.getElementById('totalJobsContainer');
+            document.getElementById('totalCountText').innerText = `Displaying ${jobs.length} total active opportunities.`;
+
+            if (jobs.length === 0) {
+                container.innerHTML = `<div class="col-12 text-center p-5 text-muted">No active jobs found.</div>`;
+                return;
+            }
+
+            container.innerHTML = jobs.map(job => {
+                const isGlobal = (job.location || '').toUpperCase() === 'GLOBAL';
+                const jobData = JSON.stringify(job).replace(/'/g, "&apos;");
+                return `
+                <div class="col-md-6 col-lg-4">
+                    <div class="job-card shadow-sm h-100">
+                        <div class="card-accent-line ${isGlobal ? 'bg-global' : 'bg-local'}"></div>
+                        <div class="p-4 d-flex flex-column h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge ${isGlobal ? 'badge-global-black' : 'bg-secondary'} rounded-pill px-3" style="font-size: 0.7rem;">
+                                    <i class="bi ${isGlobal ? 'bi-globe' : 'bi-geo-alt-fill'} me-1"></i> ${job.location || 'N/A'}
+                                </span>
+                                <span class="category-badge">${job.category || "General"}</span>
+                            </div>
+                            <h5 class="fw-bold text-black-bold mb-1">${job.title || "Untitled Job"}</h5>
+                            <div class="client-email-badge mb-2">
+                                <i class="bi bi-envelope-fill me-1"></i> ${job.clientEmail || 'Private Client'}
+                            </div>
+                            <div class="price-tag mb-3">₹${job.budget || '—'}</div>
+                            <div class="job-details-text clamped-text">${job.details || ''}</div>
+                            <div class="mt-auto border-top pt-3">
+                                <button class="btn btn-apply w-100" onclick='openApplyModal(${jobData})'>View Details & Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).reverse().join('');
+        }
+
+        function filterDisplay() {
+            const val = document.getElementById('filterType').value;
+            let filtered = cachedJobs;
+            if(val === "LOCAL") filtered = cachedJobs.filter(j => (j.location || '').toUpperCase() !== "GLOBAL");
+            else if(val === "GLOBAL") filtered = cachedJobs.filter(j => (j.location || '').toUpperCase() === "GLOBAL");
+            renderJobs(filtered);
+        }
+
+        function openApplyModal(job) {
+            if (!localStorage.getItem('userEmail')) { 
+                showLoginPrompt(); 
+                return; 
+            }
+
+            document.getElementById('jobBrief').innerHTML = `
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-white text-primary border border-primary px-2 py-1 small mb-2">#JOB-${job.id}</span>
+                        <h5 class="fw-bold text-black-bold mb-0">${job.title || 'Job Description'}</h5>
+                        <p class="text-muted small mt-2 mb-0"><i class="bi bi-person-circle me-1"></i> Client: ${job.clientEmail || 'N/A'}</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="category-badge mb-2">${job.category || 'General'}</span>
+                        <div class="fw-bold text-black-bold fs-5">Budget: ₹${job.budget || '—'}</div>
+                    </div>
+                </div>
+                <hr>
+                <div class="job-details-text text-dark" style="white-space: pre-line;">${job.details || ''}</div>
+            `;
+            document.getElementById('applyJobId').value = job.id;
+            document.getElementById('applyClientEmail').value = job.clientEmail || 'N/A';
+            document.getElementById('applyJobDetails').value = job.details || '';
+            new bootstrap.Modal(document.getElementById('applyModal')).show();
+        }
+
+        document.getElementById('proposalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitProposalBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Processing...`;
+
+            const payload = {
+                jobId: parseInt(document.getElementById('applyJobId').value),
+                clientEmail: document.getElementById('applyClientEmail').value,
+                freelancerEmail: localStorage.getItem('userEmail'),
+                jobDetails: document.getElementById('applyJobDetails').value,
+                bidAmount: parseFloat(document.getElementById('bidAmount').value),
+                coverLetter: document.getElementById('coverLetter').value,
+                status: "PENDING"
+            };
+
+            try {
+                const response = await fetch('https://hirbee-1.onrender.com/api/proposals/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById('applyModal')).hide();
+                    document.getElementById('applicationSuccessOverlay').style.display = 'flex';
+                    setTimeout(() => { window.location.href = "freelancer-dashboard.html"; }, 2000);
+                } else {
+                    const msg = await response.text();
+                    showErrorPopup(msg);
+                    btn.disabled = false;
+                    btn.innerHTML = `Submit Proposal <i class="bi bi-send-fill ms-2"></i>`;
+                }
+            } catch (err) {
+                showErrorPopup("Network error.");
+                btn.disabled = false;
+                btn.innerHTML = `Submit Proposal <i class="bi bi-send-fill ms-2"></i>`;
+            }
+        });
+
+        window.onload = loadAllJobs;
+    </script>
+    <script src="../script/session.js"></script>
+
+</body>
+    <script src="../script/session.js"></script>
+
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | Admin</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg-lavender: #F6EEFF;
+            --primary-purple: #8C4EC9;
+            --secondary-lilac: #DFC6F9;
+            --accent-orchid: #B979F7;
+            --dark-purple: #6A359C;
+            --dark-black: #111111;
+            --header-height: 70px;
+        }
+
+        body { 
+            background-color: var(--bg-lavender); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: #333;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        .admin-navbar {
+            height: var(--header-height);
+            background: #ffffff;
+            border-bottom: 1px solid var(--secondary-lilac);
+            padding: 0 1.5rem;
+            z-index: 1040;
+        }
+
+        .nav-top-link {
+            color: #2D1B41;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-top-link:hover, .nav-top-link.active {
+            background: rgba(140, 78, 201, 0.1);
+            color: var(--primary-purple);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--secondary-lilac);
+            border-radius: 24px !important;
+            box-shadow: 0 10px 30px rgba(140, 78, 201, 0.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-orchid));
+            border: none;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export {
+            background: #ffffff;
+            color: #2e7d32;
+            border: 2px solid #e8f5e9;
+            font-weight: 700;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+        .btn-export:hover {
+            background: #2e7d32;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background-color: #fff;
+            color: var(--primary-purple);
+            border: 2px solid var(--primary-purple);
+            font-weight: 600;
+            border-radius: 50px;
+        }
+
+        .table thead {
+            background-color: #fcfaff;
+            color: var(--dark-purple);
+            border-bottom: 2px solid var(--secondary-lilac);
+        }
+
+        /* Modern Table Row */
+        tbody tr {
+            transition: 0.2s;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        tbody tr:hover {
+            background-color: #faf8ff;
+        }
+
+        .badge-role {
+            background-color: rgba(140, 78, 201, 0.1);
+            color: var(--primary-purple);
+            border: 1px solid rgba(140, 78, 201, 0.2);
+            font-weight: 600;
+        }
+
+        /* --- FOOTER --- */
+        .admin-footer {
+            background: white;
+            border-top: 1px solid var(--secondary-lilac);
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        /* SweetAlert Customization */
+        .swal2-popup {
+            border-radius: 24px !important;
+            padding: 2rem !important;
+        }
+        .swal2-confirm {
+            border-radius: 12px !important;
+            padding: 12px 30px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="admin-navbar d-flex align-items-center justify-content-between sticky-top shadow-sm">
+        <div class="d-flex align-items-center gap-3">
+            <a href="admin-dashboard.html" class="text-decoration-none fw-bold fs-4" style="color: var(--primary-purple);">
+                <i class="bi bi-shield-shaded"></i> HirBee
+            </a>
+            <div class="d-none d-md-flex gap-2 ms-4">
+                <a href="index.html" class="nav-top-link">Home</a>
+                <a href="admin-dashboard.html" class="nav-top-link">Dashboard</a>
+            </div>
+        </div>
+
+        <div class="admin-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill border">
+            <div class="rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: var(--primary-purple);">
+                <i class="bi bi-person-fill text-white"></i>
+            </div>
+            <span class="fw-bold text-dark small">Admin_Root</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid main-content">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <a href="admin-dashboard.html" class="btn btn-back px-4">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </a>
+                <h3 class="fw-800 mb-0">User Control Center</h3>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-export px-4" onclick="exportToExcel()">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Export Excel
+                </button>
+                <div class="input-group shadow-sm" style="max-width: 350px;">
+                    <input type="text" id="userSearchInput" class="form-control border-0 rounded-start-pill ps-4" placeholder="Search name or email..." onkeyup="applyFilters()">
+                    <button class="btn btn-white bg-white border-0 rounded-end-pill pe-4 text-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 p-4">
+            <div class="d-flex gap-4 mb-4 pb-3 border-bottom">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="f-free" value="FREELANCER" checked onchange="applyFilters()">
+                    <label class="form-check-label fw-600" for="f-free">Freelancers</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="f-client" value="CLIENT" checked onchange="applyFilters()">
+                    <label class="form-check-label fw-600" for="f-client">Clients</label>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-3 border-0">User Detail</th>
+                            <th class="border-0">Contact</th>
+                            <th class="border-0">Role</th>
+                            <th class="border-0">Location</th>
+                            <th class="text-center border-0">Quick Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userListBody">
+                        <tr><td colspan="5" class="text-center py-5">
+                            <div class="spinner-grow text-primary" role="status"></div>
+                            <div class="mt-2 text-muted">Loading Secure Data...</div>
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer class="admin-footer text-center">
+        <p class="mb-0 text-muted small">© 2026 HirBee Admin Portal • Secure Management Interface</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE = "https://hirbee-1.onrender.com/api/admin";
+        let allUsers = [];
+
+        // Modern Toast Config
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#fff',
+            color: '#333'
+        });
+
+        window.onload = fetchUsers;
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/users`, { credentials: 'include' });
+                if(response.status === 401) throw new Error("Unauthorized");
+                allUsers = await response.json();
+                applyFilters();
+            } catch (err) {
+                document.getElementById('userListBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Session expired or connection failed.</td></tr>`;
+            }
+        }
+
+        function applyFilters() {
+            const term = document.getElementById('userSearchInput').value.toLowerCase();
+            const roles = [];
+            if(document.getElementById('f-free').checked) roles.push('FREELANCER');
+            if(document.getElementById('f-client').checked) roles.push('CLIENT');
+
+            const filtered = allUsers.filter(u => {
+                const matchRole = roles.includes(u.role);
+                const matchSearch = u.fullName?.toLowerCase().includes(term) || u.email?.toLowerCase().includes(term);
+                return matchRole && matchSearch;
+            });
+            renderTable(filtered);
+        }
+
+        function renderTable(users) {
+            const tbody = document.getElementById('userListBody');
+            if(!users.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No users found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td class="ps-3">
+                        <div class="fw-bold text-dark">${user.fullName || 'User'}</div>
+                        <div class="text-muted small">${user.email}</div>
+                    </td>
+                    <td><span class="small fw-600"><i class="bi bi-phone me-1 text-primary"></i>${user.mobile || 'N/A'}</span></td>
+                    <td><span class="badge badge-role rounded-pill px-3 py-2">${user.role}</span></td>
+                    <td><span class="small"><i class="bi bi-geo-alt-fill me-1 text-danger"></i>${user.location || 'Global'}</span></td>
+                    <td class="text-center">
+                        <div class="btn-group shadow-sm rounded-3">
+                            <button class="btn btn-sm btn-light border-end" onclick="modernNotice('${user.email}')" title="Send Notice">
+                                <i class="bi bi-send-fill text-primary"></i>
+                            </button>
+                            <button class="btn btn-sm ${user.enabled !== false ? 'btn-dark' : 'btn-success'}" 
+                                    onclick="modernToggleBan('${user.email}', ${user.enabled !== false})">
+                                <i class="bi ${user.enabled !== false ? 'bi-lock' : 'bi-unlock'}"></i>
+                                ${user.enabled !== false ? 'Ban' : 'Unban'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- MODERN UNIQUE NOTICE (SweetAlert Form) ---
+        async function modernNotice(email) {
+            const { value: formValues } = await Swal.fire({
+                title: 'Official Communication',
+                html: `
+                    <p class="text-muted small text-start">Recipient: <b>${email}</b></p>
+                    <input id="sw-subject" class="swal2-input" style="border-radius:10px;" placeholder="Notice Subject">
+                    <textarea id="sw-message" class="swal2-textarea" style="border-radius:10px;" placeholder="Type your official message here..."></textarea>
+                `,
+                confirmButtonText: 'Send Notice',
+                showCancelButton: true,
+                confirmButtonColor: '#8C4EC9',
+                preConfirm: () => {
+                    const subject = document.getElementById('sw-subject').value;
+                    const body = document.getElementById('sw-message').value;
+                    if (!subject || !body) {
+                        Swal.showValidationMessage('Both fields are required!');
+                    }
+                    return { subject, body };
+                }
+            });
+
+            if (formValues) {
+                Swal.showLoading();
+                try {
+                    const res = await fetch(`${API_BASE}/send-notice`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, ...formValues }),
+                        credentials: 'include'
+                    });
+                    if (res.ok) {
+                        Toast.fire({ icon: 'success', title: 'Notice has been dispatched' });
+                    }
+                } catch (err) {
+                    Toast.fire({ icon: 'error', title: 'Transmission failed' });
+                }
+            }
+        }
+
+        // --- MODERN UNIQUE BAN (SweetAlert Confirm) ---
+        function modernToggleBan(email, active) {
+            const mode = active ? 'Restrict Access' : 'Restore Access';
+            const color = active ? '#212529' : '#198754';
+            
+            Swal.fire({
+                title: 'Access Control',
+                text: `Are you sure you want to ${mode} for ${email}?`,
+                icon: active ? 'warning' : 'question',
+                showCancelButton: true,
+                confirmButtonColor: color,
+                confirmButtonText: `Yes, ${active ? 'Ban User' : 'Unban User'}`,
+                cancelButtonText: 'Dismiss'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const res = await fetch(`${API_BASE}/user/toggle-ban?email=${email}`, { 
+                            method: 'POST', 
+                            credentials: 'include' 
+                        });
+                        if (res.ok) {
+                            fetchUsers();
+                            Toast.fire({ icon: 'success', title: `User status updated` });
+                        }
+                    } catch (err) {
+                        Toast.fire({ icon: 'error', title: 'Action failed' });
+                    }
+                }
+            });
+        }
+
+        // --- EXPORT TO EXCEL ---
+        function exportToExcel() {
+            if(!allUsers.length) return Toast.fire({ icon: 'info', title: 'Nothing to export' });
+            
+            const data = allUsers.map(u => ({
+                "Full Name": u.fullName,
+                "Email": u.email,
+                "Mobile": u.mobile,
+                "Role": u.role,
+                "Location": u.location,
+                "Status": u.enabled !== false ? "Active" : "Banned"
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Users");
+            XLSX.writeFile(wb, "HirBee_UserList.xlsx");
+        }
+    </script>
+</body>
+</html>
