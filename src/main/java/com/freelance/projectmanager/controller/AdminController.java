@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
-// @CrossOrigin(origins = { "http://localhost:5500", "https://hir-bee-3nwb.vercel.app" }, allowCredentials = "true")
+// @CrossOrigin(origins = { "http://localhost:5500",
+// "https://hir-bee-3nwb.vercel.app" }, allowCredentials = "true")
 public class AdminController {
 
     private static final String ADMIN_EMAIL = "admin@gmail.com";
@@ -29,45 +32,44 @@ public class AdminController {
     @Autowired
     private UserActivityRepository activityRepository;
 
-   @PostMapping("/send-notice")
-public ResponseEntity<?> sendNotice(@RequestBody Map<String, String> request) {
-    try {
-        String toEmail = request.get("email");
-        String subject = request.get("subject");
-        String body = request.get("body");
+    @PostMapping("/send-notice")
+    public ResponseEntity<?> sendNotice(@RequestBody Map<String, String> request) {
+        try {
+            String toEmail = request.get("email");
+            String subject = request.get("subject");
+            String body = request.get("body");
 
-        // Basic validation
-        if (toEmail == null || !toEmail.contains("@")) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid or missing email"));
+            // Basic validation
+            if (toEmail == null || !toEmail.contains("@")) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Invalid or missing email"));
+            }
+            if (subject == null || subject.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Subject is required"));
+            }
+            if (body == null || body.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Message body is required"));
+            }
+
+            System.out.println("[ADMIN NOTICE] Sending to: " + toEmail);
+            System.out.println("Subject: " + subject);
+            System.out.println("Body preview: " + body.substring(0, Math.min(100, body.length())) + "...");
+
+            emailService.sendNoticeEmail(toEmail, subject, body);
+
+            System.out.println("[ADMIN NOTICE] Successfully sent to " + toEmail);
+
+            return ResponseEntity.ok(Map.of("message", "Notice sent successfully!"));
+
+        } catch (Exception e) {
+            // Print FULL stack trace to console/logs — very important!
+            e.printStackTrace();
+
+            String errorMsg = e.getMessage() != null ? e.getMessage() : "Unknown error";
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "Failed to send notice",
+                    "details", errorMsg));
         }
-        if (subject == null || subject.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Subject is required"));
-        }
-        if (body == null || body.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Message body is required"));
-        }
-
-        System.out.println("[ADMIN NOTICE] Sending to: " + toEmail);
-        System.out.println("Subject: " + subject);
-        System.out.println("Body preview: " + body.substring(0, Math.min(100, body.length())) + "...");
-
-        emailService.sendNoticeEmail(toEmail, subject, body);
-
-        System.out.println("[ADMIN NOTICE] Successfully sent to " + toEmail);
-
-        return ResponseEntity.ok(Map.of("message", "Notice sent successfully!"));
-
-    } catch (Exception e) {
-        // Print FULL stack trace to console/logs — very important!
-        e.printStackTrace();
-
-        String errorMsg = e.getMessage() != null ? e.getMessage() : "Unknown error";
-        return ResponseEntity.status(500).body(Map.of(
-            "error", "Failed to send notice",
-            "details", errorMsg
-        ));
     }
-}
 
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Object>> getStats() {
@@ -158,5 +160,14 @@ public ResponseEntity<?> sendNotice(@RequestBody Map<String, String> request) {
     public ResponseEntity<?> clearActivities() {
         activityRepository.deleteAll();
         return ResponseEntity.ok(Map.of("message", "Logs cleared"));
+    }
+
+    @GetMapping("/subscriptions")
+    public ResponseEntity<?> getAllSubscriptions() {
+        // Agar aapko sirf wo users chahiye jinka subscription active hai
+        List<User> activeSubs = userRepository.findAll().stream()
+                .filter(u -> "ACTIVE".equals(u.getSubscriptionStatus()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(activeSubs);
     }
 }
